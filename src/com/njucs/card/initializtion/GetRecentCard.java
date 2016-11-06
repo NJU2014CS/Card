@@ -7,9 +7,12 @@ package com.njucs.card.initializtion;
  * 2016-11-02
  */
 public class GetRecentCard {
-	private static String[] data = { "Apple", "Banana", "Orange", "Watermelon",
-			"Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango" , "Banana", "Orange", "Watermelon",
-			"Pear", "Grape", "Pineapple", "Strawberry", "Cherry", "Mango" };
+	private static String[] data = {
+			"张三	a公司",
+			"李四	b公司",
+			"王五	c公司",
+			"Test	"
+	};
 	
 	public static String[] getData(){
 		return data;

@@ -67,7 +67,7 @@ public class ContactActivity extends Activity {
 		
 		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts("")),R.layout.contact,
 				new String[]{"label","info"},
-				new int[]{R.id.label,R.id.info});
+				new int[]{R.id.label,R.id.web_info});
 		listview.setAdapter(adapter);
 		Log.i("String", "Adapter");
 	}

@@ -35,7 +35,7 @@
             android:paddingBottom="10dp"/>
         
         <EditText
-            android:id="@+id/info"
+            android:id="@+id/web_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15dp"

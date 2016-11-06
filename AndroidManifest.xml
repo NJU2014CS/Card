@@ -32,6 +32,11 @@
        <activity
            android:name=".contact.ContactActivity">
        </activity>
+       
+       <activity
+           android:name=".tools.web.WebTest">
+       </activity>
+       
     </application>
 
 </manifest>

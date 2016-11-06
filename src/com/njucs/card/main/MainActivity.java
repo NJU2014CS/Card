@@ -5,15 +5,18 @@ import com.njucs.card.contact.ContactActivity;
 import com.njucs.card.initializtion.GetRecentCard;
 import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.FormatConversion;
+import com.njucs.card.tools.web.WebTest;
 import com.njucs.card.user.User;
 
 import java.io.*;
 import android.widget.*;
+import android.widget.AdapterView.OnItemClickListener;
 import android.graphics.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -24,7 +27,7 @@ import android.view.View.OnTouchListener;
 /*
  * 主界面：包括最近扫描结果组成的一个列表ListView::recent和下方四个ImageButton
  * 分别是：名片夹（没什么用），相册，照相，用户
- * 相册和照相的响应函数以完成，会在onActivityResult()里得到一个图片的Uri进而处理得到Bitmap传入识别模块
+ * 相册和照相的响应函数已完成，会在onActivityResult()里得到一个图片的Uri进而处理得到Bitmap传入识别模块
  * 
  * 对于最近处理列表还需要对每一项添加响应函数，点击后跳转到我们自定义的一个联系人界面（未设计）进行浏览
  * 2016-11-02
@@ -33,25 +36,35 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 	static final int ALBUM=1, CAMERA=2;
 	
 	private ImageButton album, camera, user;
-	private ImageView test;
 	private ListView recent;
+	
+	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
+	private Uri imageUri;
+	// 主页上用来测试照片选取功能的组件
+	private ImageView test;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		test=(ImageView)findViewById(R.id.test);
 		
+		test=(ImageView)findViewById(R.id.test);
 		album=(ImageButton)findViewById(R.id.btn_album);
 		camera=(ImageButton)findViewById(R.id.btn_camera);
 		user=(ImageButton)findViewById(R.id.btn_user);
+		recent = (ListView) findViewById(R.id.list_recent);
 		album.setOnTouchListener(this);
 		camera.setOnTouchListener(this);
 		user.setOnTouchListener(this);
+		// 获取最近识别的名片信息
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, GetRecentCard.getData());
+		recent.setAdapter(adapter);
 		
+		// 几个控件的点击响应函数
 		album.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				Log.i("InMainActicity", "Click Album");
 				Intent intent=new Intent();  
 				intent.setAction(Intent.ACTION_GET_CONTENT); 
 				intent.setType("image/*");
@@ -62,7 +75,21 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 		camera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				Log.i("InMainActicity", "Click Camrea");
+				// 拍照得到的照片存储在temp.jpg
+				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+				try {
+					if (outputImage.exists()) {
+						outputImage.delete();
+					}
+					outputImage.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				// 获取照片的URI
+				imageUri = Uri.fromFile(outputImage);
+				Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
 				startActivityForResult(intent, CAMERA);
 			}
 		});
@@ -70,28 +97,37 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 		user.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("Main", "Click User");
+				Log.i("InMainActicity", "Click User");
 				Intent intent = new Intent(MainActivity.this, User.class);
 				startActivity(intent);
 			}
 		});
 		
-		recent = (ListView) findViewById(R.id.list_recent);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, GetRecentCard.getData());
-		recent.setAdapter(adapter);
+		recent.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				if(position==3){
+					Log.i("InMainActicity", "Click Test");
+					Intent intent = new Intent(MainActivity.this, WebTest.class);
+					startActivity(intent);
+				}
+			}
+		});
 
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// 没有选取或者拍摄照片，resultCode=0，直接返回。
 		if(resultCode!=RESULT_OK)
 			return ;
 		
 		Bitmap bitmap=null;
+		
 		switch (requestCode) {
 		case ALBUM:
 			if(data!=null){
-				Uri imageUri=data.getData();
+				imageUri=data.getData();
 				try {
 					bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
 					Log.i("ALBUM", bitmap.getWidth()+"*"+bitmap.getHeight());
@@ -103,13 +139,12 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 			}
 			break;
 		case CAMERA:
-			bitmap=data.getParcelableExtra("data");
-			if(bitmap!=null){
+			try {
+				bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
 				Log.i("Camera", bitmap.getWidth()+"*"+bitmap.getHeight());
-				//获取照片成功，设置背景（测试），下一步将照片作为数据传递
-				//目前似乎存在拍照获得的Bitmap失真的问题
-				//----------------------------
 				test.setImageBitmap(bitmap);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
 			}
 			break;
 		default:
