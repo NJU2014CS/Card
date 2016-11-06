@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:background="#DCDCDC" >
+
+        <ImageButton
+            android:id="@+id/btn_cardcase"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.99"
+            android:background="#00000000"
+            android:contentDescription="@string/Cardcase"
+            android:src="@drawable/cardcase" />
+
+        <ImageButton
+            android:id="@+id/btn_album"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.99"
+            android:background="#00000000"
+            android:contentDescription="@string/Album"
+            android:src="@drawable/album" />
+
+        <ImageButton
+            android:id="@+id/btn_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1.00"
+            android:background="#00000000"
+            android:contentDescription="@string/Camera"
+            android:src="@drawable/camera" />
+
+        <ImageButton
+            android:id="@+id/btn_user"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="#00000000"
+            android:contentDescription="@string/User"
+            android:src="@drawable/user" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:contentDescription="@string/..."/>
+
+    <ListView
+        android:id="@+id/list_recent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+    </ListView>
+
+</RelativeLayout>

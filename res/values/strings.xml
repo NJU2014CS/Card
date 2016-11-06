@@ -1,0 +1,13 @@
+<resources>
+
+    <string name="app_name">Card</string>
+    <string name="Camera">Take a photo</string>
+    <string name="User">About user</string>
+    <string name="Album">Select from album</string>
+    <string name="Cardcase">Show the cardcase</string>
+    <string name="About">关于</string>
+    <string name="Setting">设置</string>
+    <string name="...">……</string>
+    
+
+</resources>
