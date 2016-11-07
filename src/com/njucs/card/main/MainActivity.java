@@ -3,15 +3,14 @@ package com.njucs.card.main;
 import com.njucs.card.R;
 import com.njucs.card.contact.ContactActivity;
 import com.njucs.card.initializtion.GetRecentCard;
+import com.njucs.card.recognition.Recognition;
 import com.njucs.card.tools.BaseActivity;
-import com.njucs.card.tools.FormatConversion;
 import com.njucs.card.tools.web.WebTest;
 import com.njucs.card.user.User;
 
 import java.io.*;
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
-import android.graphics.*;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.net.Uri;
@@ -36,17 +35,16 @@ public class MainActivity extends BaseActivity{
 	static final int ALBUM=1, CAMERA=2;
 	
 	private ImageButton album, camera, user;
+	// 最近处理的联系人列表
 	private ListView recent;
 	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
 	private Uri imageUri;
-	// 主页上用来测试照片选取功能的组件
-	private ImageView test;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);	
-		test=(ImageView)findViewById(R.id.test);	
+		
 		// 几个控件的点击响应函数
 		onAlbum();
 		onCamera();
@@ -60,46 +58,36 @@ public class MainActivity extends BaseActivity{
 		if(resultCode!=RESULT_OK)
 			return ;
 		
-		Bitmap bitmap=null;
-		
 		switch (requestCode) {
 		case ALBUM:
 			if(data!=null){
 				imageUri=data.getData();
-				try {
-					bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-					Log.i("ALBUM", bitmap.getWidth()+"*"+bitmap.getHeight());
-					//获取照片成功，设置背景（测试），下一步将照片作为数据传递
-					test.setImageBitmap(bitmap);
-				} catch (FileNotFoundException e) {
-					e.printStackTrace();
-				}
+				Log.i("ALBUM", imageUri.toString());
+				String info=Recognition.Handle(imageUri);
+				// 要检测返回信息info是否为空，来确定识别是否成功
+				callContactActivity(info);
 			}
 			break;
 		case CAMERA:
-			try {
-				bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-				Log.i("Camera", bitmap.getWidth()+"*"+bitmap.getHeight());
-				test.setImageBitmap(bitmap);
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}
+			Log.i("Camera", imageUri.toString());
+			String info=Recognition.Handle(imageUri);
+			// 要检测返回信息info是否为空，来确定识别是否成功
+			callContactActivity(info);
 			break;
 		default:
 			break;
 		}
-		
-		//未选取照片时不进行任何动作
-		if(data!=null&&bitmap!=null){
-			//Log.i("String", "OutSide!");
-			Intent intent=new Intent(MainActivity.this, ContactActivity.class);
-			byte[] pic=FormatConversion.Bitmap2Bytes(bitmap);
-			intent.putExtra("Picture", pic);
-			//Log.i("String", "Convert Success");
-			startActivity(intent);
-		}
-	}
 
+	}
+	
+	private void callContactActivity(String info){
+		// 传递两个参数，一个URI，一个识别出来的信息Info
+		Intent intent=new Intent(MainActivity.this, ContactActivity.class);
+		intent.putExtra("Uri", imageUri.toString());
+		intent.putExtra("Info", info);
+		startActivity(intent);
+	}
+	
 	private void onAlbum(){
 		album=(ImageButton)findViewById(R.id.btn_album);
 		

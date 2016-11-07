@@ -16,9 +16,18 @@ public class Contacts{
 	private String fax=null;				// 传真
 	private String note=null;				// 备注
 	
+	// 构造函数
+	public Contacts(String s){
+		name="zwj";
+		mobilephone="15152280426";
+		address="江苏省南京市栖霞区仙林大道163号";
+		mail="1031320610@qq.com";
+		company="南京大学";
+		duty="学生";
+		note="老子最帅";
+	}
 	
 	//	Get Set 函数
-	
 	public String getName() {
 		return name;
 	}
@@ -74,14 +83,4 @@ public class Contacts{
 		this.note = note;
 	}
 
-	public Contacts(String s){
-		name="zwj";
-		mobilephone="15152280426";
-		address="江苏省南京市栖霞区仙林大道163号";
-		mail="1031320610@qq.com";
-		company="南京大学";
-		duty="学生";
-		note="老子最帅";
-	}
-	
 }

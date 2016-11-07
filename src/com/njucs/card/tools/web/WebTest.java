@@ -24,7 +24,7 @@ public class WebTest extends BaseActivity {
 
 		content=(EditText)findViewById(R.id.content);
 
-		web_info=(TextView)findViewById(R.id.web_info);
+		web_info=(TextView)findViewById(R.id.web_desc);
 
 		web_search=(Button)findViewById(R.id.web_search);
 		

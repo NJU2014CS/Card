@@ -1,17 +1,19 @@
 package com.njucs.card.contact;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.njucs.card.R;
+import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.Contacts;
-import com.njucs.card.tools.FormatConversion;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -27,16 +29,20 @@ import android.widget.TextView;
  * 需要上一个活动通过putExtra来进行数据传递
  * 可通过tools中的FormatConversion类来进行类型转换，将bitmap或者drawable以及Contacts类转换成byte数组
  *
- *数据通过getData传入List<Map>中去，并由ListView显示
+ * 数据通过getData传入List<Map>中去，并由ListView显示
  * 
  */
 
-public class ContactActivity extends Activity {
+public class ContactActivity extends BaseActivity {
+	// 用来接收从上层活动传递过来的参数：图片的URI以及识别出来基本信息
+	private Uri imageUri;
+	private String info;
+	
 	private ListView listview=null;
 	private ImageView iv;
 	private List<Map<String,Object>> record;
 	
-	//private String changedinfo=null;
+//	private String changedinfo=null;
 	
 	public final class widget{
 		public TextView label;
@@ -49,27 +55,36 @@ public class ContactActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact);
 		
-		//Log.i("String", "Inside");
-		
 		Intent intent=getIntent();
-		Bitmap bm=FormatConversion.Bytes2Bitmap(intent.getByteArrayExtra("Picture"));
+		imageUri=Uri.parse(intent.getStringExtra("Uri"));
+//		Log.i("InContactActivity", imageUri.toString());
+		info=intent.getStringExtra("Info");
+//		Log.i("InContactActivity", info);
 		
-		//Log.i("String", "Convert Success");
+		Bitmap bm=null;
+		try {
+			bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+//		Bitmap bm=FormatConversion.Bytes2Bitmap(intent.getByteArrayExtra("Picture"));
+		
+//		Log.i("String", "Convert Success");
 
 		iv=(ImageView)findViewById(R.id.handledpic);
 		if(bm!=null){
 			iv.setImageBitmap(bm);
 		}
 		
-		Log.i("String", "Show the Picture");
+		Log.i("InContactActivity", "Show the Picture");
 		
 		listview=(ListView)findViewById(R.id.contactlist);
 		
-		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts("")),R.layout.contact,
+		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts(info)),R.layout.contact,
 				new String[]{"label","info"},
 				new int[]{R.id.label,R.id.web_info});
 		listview.setAdapter(adapter);
-		Log.i("String", "Adapter");
+		Log.i("InContactActivity", "Adapter");
 	}
 	
 	/*private ArrayList<String> getData(Contacts c){
@@ -156,4 +171,5 @@ public class ContactActivity extends Activity {
 		
 		return record;
 	}
+
 }

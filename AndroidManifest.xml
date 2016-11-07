@@ -24,17 +24,11 @@
             </intent-filter>
        </activity>
        
-       <activity
-            android:name=".user.User">
-       </activity>
+       <activity android:name=".user.User"></activity>
        
-       <activity
-           android:name=".contact.ContactActivity">
-       </activity>
+       <activity android:name=".contact.ContactActivity"></activity>
        
-       <activity
-           android:name=".tools.web.WebTest">
-       </activity>
+       <activity android:name=".tools.web.WebTest"></activity>
 
        
     </application>

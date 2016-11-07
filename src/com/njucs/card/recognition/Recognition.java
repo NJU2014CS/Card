@@ -1,6 +1,5 @@
 package com.njucs.card.recognition;
 
-import com.njucs.card.tools.Contacts;
 import android.net.Uri;
 
 /*
@@ -9,8 +8,9 @@ import android.net.Uri;
  */
 public class Recognition {
 	
-	public static Contacts Handle(Uri imageUri){
-		return null;
+	public static String Handle(Uri imageUri){
+		String info="Test";
+		return info;
 	}
 	
 }

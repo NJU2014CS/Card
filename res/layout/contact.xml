@@ -5,42 +5,44 @@
     
     <ImageView
         android:id="@+id/handledpic"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
+        android:contentDescription="@string/..."
         android:paddingBottom="10dp"
         android:scaleType="fitStart" />
         
     <LinearLayout
-        android:layout_below="@id/handledpic"
         android:id="@+id/linearlayoutlist"
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:layout_below="@+id/handledpic"
+        android:orientation="vertical" >
         
         <ListView
             android:id="@+id/contactlist"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" >
+
         </ListView>
         
         <TextView
             android:id="@+id/label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:paddingBottom="10dp"/>
+            android:paddingBottom="10dp"
+            android:textSize="15sp" />
         
         <EditText
             android:id="@+id/web_info"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
             android:background="@null"
-            android:inputType="textNoSuggestions"/>
+            android:inputType="textNoSuggestions"
+            android:textSize="15sp" />
         
     </LinearLayout>
     
