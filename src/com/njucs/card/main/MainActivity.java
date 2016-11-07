@@ -32,12 +32,11 @@ import android.view.View.OnTouchListener;
  * 对于最近处理列表还需要对每一项添加响应函数，点击后跳转到我们自定义的一个联系人界面（未设计）进行浏览
  * 2016-11-02
  */
-public class MainActivity extends BaseActivity implements OnTouchListener{
+public class MainActivity extends BaseActivity{
 	static final int ALBUM=1, CAMERA=2;
 	
 	private ImageButton album, camera, user;
 	private ListView recent;
-	
 	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
 	private Uri imageUri;
 	// 主页上用来测试照片选取功能的组件
@@ -46,74 +45,13 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);
-		
-		test=(ImageView)findViewById(R.id.test);
-		album=(ImageButton)findViewById(R.id.btn_album);
-		camera=(ImageButton)findViewById(R.id.btn_camera);
-		user=(ImageButton)findViewById(R.id.btn_user);
-		recent = (ListView) findViewById(R.id.list_recent);
-		album.setOnTouchListener(this);
-		camera.setOnTouchListener(this);
-		user.setOnTouchListener(this);
-		// 获取最近识别的名片信息
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, GetRecentCard.getData());
-		recent.setAdapter(adapter);
-		
+		setContentView(R.layout.main);	
+		test=(ImageView)findViewById(R.id.test);	
 		// 几个控件的点击响应函数
-		album.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i("InMainActicity", "Click Album");
-				Intent intent=new Intent();  
-				intent.setAction(Intent.ACTION_GET_CONTENT); 
-				intent.setType("image/*");
-				startActivityForResult(intent, ALBUM);     
-			}
-		});
-		
-		camera.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i("InMainActicity", "Click Camrea");
-				// 拍照得到的照片存储在temp.jpg
-				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
-				try {
-					if (outputImage.exists()) {
-						outputImage.delete();
-					}
-					outputImage.createNewFile();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
-				// 获取照片的URI
-				imageUri = Uri.fromFile(outputImage);
-				Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
-				intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-				startActivityForResult(intent, CAMERA);
-			}
-		});
-
-		user.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				Log.i("InMainActicity", "Click User");
-				Intent intent = new Intent(MainActivity.this, User.class);
-				startActivity(intent);
-			}
-		});
-		
-		recent.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				if(position==3){
-					Log.i("InMainActicity", "Click Test");
-					Intent intent = new Intent(MainActivity.this, WebTest.class);
-					startActivity(intent);
-				}
-			}
-		});
-
+		onAlbum();
+		onCamera();
+		onUser();
+		onRecent();
 	}
 	
 	@Override
@@ -162,32 +100,113 @@ public class MainActivity extends BaseActivity implements OnTouchListener{
 		}
 	}
 
-	@SuppressLint("ClickableViewAccessibility")
-	@Override
-	public boolean onTouch(View v, MotionEvent event) {
-		switch(v.getId()){
-		case R.id.btn_album:
-			if(event.getAction() == MotionEvent.ACTION_DOWN)
-				album.setImageDrawable(getResources().getDrawable(R.drawable.album_press));		
-			if(event.getAction() == MotionEvent.ACTION_UP)
-				album.setImageDrawable(getResources().getDrawable(R.drawable.album));		
-			break;
-		case R.id.btn_camera:
-			if(event.getAction() == MotionEvent.ACTION_DOWN)
-				camera.setImageDrawable(getResources().getDrawable(R.drawable.camera_press));		
-			if(event.getAction() == MotionEvent.ACTION_UP)
-				camera.setImageDrawable(getResources().getDrawable(R.drawable.camera));	
-			break;
-		case R.id.btn_user:
-			if(event.getAction() == MotionEvent.ACTION_DOWN)
-				user.setImageDrawable(getResources().getDrawable(R.drawable.user_press));		
-			if(event.getAction() == MotionEvent.ACTION_UP)
-				user.setImageDrawable(getResources().getDrawable(R.drawable.user));	
-			break;
-		default:
-			break;
-		}
-		return false;
+	private void onAlbum(){
+		album=(ImageButton)findViewById(R.id.btn_album);
+		
+		album.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("InMainActicity", "Click Album");
+				Intent intent=new Intent();  
+				intent.setAction(Intent.ACTION_GET_CONTENT); 
+				intent.setType("image/*");
+				startActivityForResult(intent, ALBUM);     
+			}
+		});
+		
+		album.setOnTouchListener(new OnTouchListener() {
+			@SuppressLint("ClickableViewAccessibility")
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction() == MotionEvent.ACTION_DOWN)
+					album.setImageDrawable(getResources().getDrawable(R.drawable.album_press));		
+				if(event.getAction() == MotionEvent.ACTION_UP)
+					album.setImageDrawable(getResources().getDrawable(R.drawable.album));		
+				return false;
+			}
+		});
 	}
-
+	
+	private void onCamera(){
+		camera=(ImageButton)findViewById(R.id.btn_camera);
+		
+		camera.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("InMainActicity", "Click Camrea");
+				// 拍照得到的照片存储在temp.jpg
+				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+				try {
+					if (outputImage.exists()) {
+						outputImage.delete();
+					}
+					outputImage.createNewFile();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				// 获取照片的URI
+				imageUri = Uri.fromFile(outputImage);
+				Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+				intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+				startActivityForResult(intent, CAMERA);
+			}
+		});
+		
+		camera.setOnTouchListener(new OnTouchListener() {		
+			@SuppressLint("ClickableViewAccessibility")
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction() == MotionEvent.ACTION_DOWN)
+					camera.setImageDrawable(getResources().getDrawable(R.drawable.camera_press));		
+				if(event.getAction() == MotionEvent.ACTION_UP)
+					camera.setImageDrawable(getResources().getDrawable(R.drawable.camera));	
+				return false;
+			}
+		});
+	}
+	
+	private void onUser(){
+		user=(ImageButton)findViewById(R.id.btn_user);
+		
+		user.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Log.i("InMainActicity", "Click User");
+				Intent intent = new Intent(MainActivity.this, User.class);
+				startActivity(intent);
+			}
+		});
+		
+		user.setOnTouchListener(new OnTouchListener() {	
+			@SuppressLint("ClickableViewAccessibility")
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				if(event.getAction() == MotionEvent.ACTION_DOWN)
+					user.setImageDrawable(getResources().getDrawable(R.drawable.user_press));		
+				if(event.getAction() == MotionEvent.ACTION_UP)
+					user.setImageDrawable(getResources().getDrawable(R.drawable.user));	
+				return false;
+			}
+		});
+	}
+	
+	private void onRecent(){
+		recent = (ListView) findViewById(R.id.list_recent);
+		
+		// 获取最近识别的名片信息
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, GetRecentCard.getData());
+		recent.setAdapter(adapter);
+		
+		recent.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+				if(position==3){
+					Log.i("InMainActicity", "Click Test");
+					Intent intent = new Intent(MainActivity.this, WebTest.class);
+					startActivity(intent);
+				}
+			}
+		});
+	}
+	
 }

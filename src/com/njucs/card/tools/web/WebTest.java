@@ -4,7 +4,8 @@ import com.njucs.card.R;
 import com.njucs.card.tools.BaseActivity;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -27,6 +28,12 @@ public class WebTest extends BaseActivity {
 
 		web_search=(Button)findViewById(R.id.web_search);
 		
-		
+		web_search.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				String s=content.getText().toString();
+				web_info.setText(s.toCharArray(),0,s.length());
+			}
+		});
 	}
 }

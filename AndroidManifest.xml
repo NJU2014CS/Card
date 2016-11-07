@@ -6,7 +6,6 @@
 	<uses-permission android:name="android.permission.READ_CONTACTS"/><!-- 读取通讯录权限 -->  
 	<uses-permission android:name="android.permission.WRITE_CONTACTS"/><!-- 写入通讯录权限 -->  
 
-	
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="24" />
@@ -36,6 +35,7 @@
        <activity
            android:name=".tools.web.WebTest">
        </activity>
+
        
     </application>
 
