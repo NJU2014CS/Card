@@ -5,14 +5,16 @@
     
     <ImageView
         android:id="@+id/handledpic"
-        android:layout_width="fill_parent"
+        android:adjustViewBounds="true"
+        android:maxHeight="250dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:contentDescription="@string/..."
         android:paddingBottom="10dp"
-        android:scaleType="fitStart" />
+        android:scaleType="centerCrop" />
         
     <LinearLayout
         android:id="@+id/linearlayoutlist"
