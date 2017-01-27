@@ -18,7 +18,7 @@ public class Contacts{
 	
 	// 构造函数
 	public Contacts(String s){
-		name="zwj";
+		name=s;
 		mobilephone="15152280426";
 		address="江苏省南京市栖霞区仙林大道163号";
 		mail="1031320610@qq.com";

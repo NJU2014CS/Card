@@ -13,6 +13,7 @@ import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -32,21 +33,27 @@ import android.view.View.OnTouchListener;
  * 2016-11-02
  */
 public class MainActivity extends BaseActivity{
-	static final int ALBUM=1, CAMERA=2;
+	static final int ALBUM=1, CAMERA=2, CROP=3;
 	
 	private ImageButton album, camera, user;
 	// 最近处理的联系人列表
 	private ListView recent;
 	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
 	private Uri imageUri;
+	// 共享位图
+	public static Bitmap bitmap;
 	
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+ 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);	
 		
+		// 获取版本号
+		int version=android.os.Build.VERSION.SDK_INT;
+		Log.i("Version", version+"");
+		
 		// 几个控件的点击响应函数
-		onAlbum();
+		onAlbum();		
 		onCamera();
 		onUser();
 		onRecent();
@@ -58,32 +65,34 @@ public class MainActivity extends BaseActivity{
 		if(resultCode!=RESULT_OK)
 			return ;
 		
-		switch (requestCode) {
-		case ALBUM:
+		if(requestCode==ALBUM){
 			if(data!=null){
 				imageUri=data.getData();
-				Log.i("ALBUM", imageUri.toString());
-				String info=Recognition.Handle(imageUri);
-				// 要检测返回信息info是否为空，来确定识别是否成功
-				callContactActivity(info);
+				Crop(ALBUM);
 			}
-			break;
-		case CAMERA:
-			Log.i("Camera", imageUri.toString());
-			String info=Recognition.Handle(imageUri);
-			// 要检测返回信息info是否为空，来确定识别是否成功
-			callContactActivity(info);
-			break;
-		default:
-			break;
 		}
-
+		else if(requestCode==CAMERA){
+			Crop(CAMERA);
+		}
+		else if(requestCode==CROP){
+			// 裁剪后直接取得数据。
+			bitmap=data.getParcelableExtra("data");
+			// 识别过程。
+			String info=Recognition.BitmapToText();
+			Log.i("content", info);
+			// 调用其他活动。
+			callContactActivity(info);
+		}
+		else{
+			Log.e("Error", "In MainActivity, onActivityResult");
+		}
 	}
 	
 	private void callContactActivity(String info){
-		// 传递两个参数，一个URI，一个识别出来的信息Info
+		// 传递识别出来的信息Info
+		// 不再传递URI，其他活动直接使用本活动中的共享位图数据。
 		Intent intent=new Intent(MainActivity.this, ContactActivity.class);
-		intent.putExtra("Uri", imageUri.toString());
+		// intent.putExtra("Uri", imageUri.toString());
 		intent.putExtra("Info", info);
 		startActivity(intent);
 	}
@@ -95,9 +104,8 @@ public class MainActivity extends BaseActivity{
 			@Override
 			public void onClick(View v) {
 				Log.i("InMainActicity", "Click Album");
-				Intent intent=new Intent();  
-				intent.setAction(Intent.ACTION_GET_CONTENT); 
-				intent.setType("image/*");
+				Intent intent = new Intent(Intent.ACTION_PICK);
+				intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
 				startActivityForResult(intent, ALBUM);     
 			}
 		});
@@ -122,8 +130,8 @@ public class MainActivity extends BaseActivity{
 			@Override
 			public void onClick(View v) {
 				Log.i("InMainActicity", "Click Camrea");
-				// 拍照得到的照片存储在temp.jpg
-				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
+				// 拍照得到的照片存储在output_image.jpg
+				File outputImage = new File(Environment.getExternalStorageDirectory(), "output_image.jpg");
 				try {
 					if (outputImage.exists()) {
 						outputImage.delete();
@@ -196,5 +204,18 @@ public class MainActivity extends BaseActivity{
 			}
 		});
 	}
-	
+
+	// 裁剪，返回位图数据
+	private void Crop(int order){
+		Intent intent = new Intent("com.android.camera.action.CROP");
+		intent.setDataAndType(imageUri, "image/*");
+		intent.putExtra("crop", true);
+		intent.putExtra("scale", true);
+		intent.putExtra("return-data", true); 
+		if(order==CAMERA){
+			intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+		}
+		startActivityForResult(intent, CROP);
+	}
+
 }

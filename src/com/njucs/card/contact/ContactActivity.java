@@ -1,19 +1,17 @@
 package com.njucs.card.contact;
 
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import com.njucs.card.R;
+import com.njucs.card.main.MainActivity;
 import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.Contacts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -34,16 +32,14 @@ import android.widget.TextView;
  */
 
 public class ContactActivity extends BaseActivity {
-	// 用来接收从上层活动传递过来的参数：图片的URI以及识别出来基本信息
-	private Uri imageUri;
+	// 用来接收从上层活动传递过来的参数：识别出来基本信息
+	//	private Uri imageUri;
 	private String info;
 	
 	private ListView listview=null;
 	private ImageView iv;
 	private List<Map<String,Object>> record;
-	
-//	private String changedinfo=null;
-	
+		
 	public final class widget{
 		public TextView label;
 		public EditText info;
@@ -51,26 +47,16 @@ public class ContactActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact);
 		
+		// 获取传递参数中识别出来的名片信息
 		Intent intent=getIntent();
-		imageUri=Uri.parse(intent.getStringExtra("Uri"));
-//		Log.i("InContactActivity", imageUri.toString());
 		info=intent.getStringExtra("Info");
-//		Log.i("InContactActivity", info);
 		
-		Bitmap bm=null;
-		try {
-			bm = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-//		Bitmap bm=FormatConversion.Bytes2Bitmap(intent.getByteArrayExtra("Picture"));
+		// 从主活动中直接取得图片相应的位图
+		Bitmap bm=MainActivity.bitmap;
 		
-//		Log.i("String", "Convert Success");
-
 		iv=(ImageView)findViewById(R.id.handledpic);
 		if(bm!=null){
 			iv.setImageBitmap(bm);
