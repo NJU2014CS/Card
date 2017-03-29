@@ -10,12 +10,21 @@ import android.graphics.Bitmap;
  */
 public class Recognition {
 	
+	static boolean english=true;
+	
 	public static String BitmapToText(){
+//		Process.Test();
+		
 		Bitmap bm=MainActivity.bitmap;
 		
 		TessBaseAPI baseApi=new TessBaseAPI();
 		
-		baseApi.init("/storage/emulated/0/1/", "1");
+		if(english){
+			baseApi.init("/storage/emulated/0/1/", "eng");
+		}
+		else{
+			baseApi.init("/storage/emulated/0/1/", "chi");
+		}
 		
 		baseApi.setImage(bm);
 		
