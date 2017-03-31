@@ -1,32 +1,46 @@
 package com.njucs.card.recognition;
 
-import com.googlecode.leptonica.android.MorphApp;
-import com.googlecode.leptonica.android.Pix;
-import com.googlecode.leptonica.android.ReadFile;
-import com.googlecode.leptonica.android.WriteFile;
+import java.util.ArrayList;
+
+import org.opencv.android.Utils;
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
+
 import com.njucs.card.main.MainActivity;
 
 import android.graphics.Bitmap;
 
+/*
+ * 文字识别之前的图片处理：
+ * 
+ */
+
 public class Process {
-
-	static Bitmap bmp;
 	
-	static Pix pixs;
+	private Bitmap original_picture;
 	
-	public static void Test(){
-		bmp=MainActivity.bitmap;
-		
-		pixs=ReadFile.readBitmap(bmp);
-		
-		pixs=MorphApp.pixFastTophatBlack(pixs);
-//		pixs=Convert.convertTo8(pixs);
-
-//		pixs=Binarize.sauvolaBinarizeTiled(pixs);
-//		pixs=GrayQuant.pixThresholdToBinary(pixs, 110);
-		
-		bmp=WriteFile.writeBitmap(pixs);
-		
-		MainActivity.bitmap=bmp;	
+	public Process(){
+		original_picture=MainActivity.bitmap.copy(Bitmap.Config.ARGB_8888, true);
 	}
+	
+	public ArrayList<Mat> Cut(){
+		Mat img=new Mat();
+		Utils.bitmapToMat(original_picture, img);
+/*		
+		Mat gray_x=new Mat();
+		Imgproc.Sobel(img, gray_x, CvType.CV_16S, 1, 0, 3, 1, 1);
+		Core.convertScaleAbs(gray_x, gray_x);
+		
+		Mat binary=new Mat();
+		binary.create(img.size(), img.type());
+		Mat edge=new Mat();
+		Imgproc.blur(gray_x, edge, new Size(3, 3));
+		Imgproc.threshold(edge, binary, 150, 255, Imgproc.THRESH_BINARY);
+*/
+		return null;
+	}
+
 }
