@@ -50,7 +50,7 @@ public class MainActivity extends BaseActivity{
 		
 		// 获取版本号
 		int version=android.os.Build.VERSION.SDK_INT;
-		Log.i("Version", version+"");
+		Log.i("SystemVersion", version+"");
 		
 		// 几个控件的点击响应函数
 		onAlbum();		
@@ -78,8 +78,8 @@ public class MainActivity extends BaseActivity{
 			// 裁剪后直接取得数据。
 			bitmap=data.getParcelableExtra("data");
 			// 识别过程。
-			String info=Recognition.BitmapToText();
-			Log.i("content", info);
+			Recognition r=new Recognition();
+			String info=r.getText();
 			// 调用其他活动。
 			callContactActivity(info);
 		}
