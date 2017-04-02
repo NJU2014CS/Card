@@ -9,6 +9,9 @@
     <string name="Setting">设置</string>
     <string name="...">……</string>
     <string name="Search">Search</string>
+    <string name="TestConnect">网络连接测试</string>
+    <string name="IPaddr">192.168.1.100</string>
+    <string name="Connect">发送</string>
     
 
 </resources>

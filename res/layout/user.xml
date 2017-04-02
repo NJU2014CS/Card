@@ -66,4 +66,37 @@
             android:src="@drawable/right" />
     </TableRow>
 
+    <TableRow
+        android:id="@+id/TestConnect"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/Setting"
+        android:layout_alignParentLeft="true"
+        android:layout_marginBottom="16dp"
+        android:background="#ffffff" >
+        
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/TestConnect"
+            android:paddingLeft="20dp"
+            android:paddingRight="20dp"
+            android:src="@drawable/testconnect" />
+        
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="10dp"
+            android:text="@string/TestConnect"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="23sp" />
+
+        <ImageView
+            android:id="@+id/TestConnectView"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/..."
+            android:src="@drawable/right" />
+        
+    </TableRow>
+
 </RelativeLayout>

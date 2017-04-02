@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.io.StreamCorruptedException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -13,23 +12,29 @@ import java.net.UnknownHostException;
 
 public class SendMessage implements Runnable{
 	private Socket socket;
-	private static String ip="localhost";
+	private String ip="localhost";
 	private Object Message;
 	private Object Result;
+	private boolean isOver=false;
+	private final int ttl=5000;
 	
 	/*
 	 *errorcode对应的错误 
 	 *-1		无错误
 	 *0			错误的ip地址
 	 *1			无法连接服务器
-	 *2			连接超时
-	 *3			与服务器连接断开
+	 *2			与服务器连接断开
 	 */
 	private int errorcode=-1;
 	
-	public SendMessage(Serializable Message){
+	public SendMessage(String ip,Serializable Message){
 		this.Message=Message;
 		Result=null;
+		this.ip=ip;
+	}
+	
+	//该函数在初始化时不可使用，因为Android不允许在主线程中使用网络通信
+	private void connect(){
 		try {
 			socket=new Socket(ip,8080);
 		} catch (UnknownHostException e) {
@@ -50,7 +55,7 @@ public class SendMessage implements Runnable{
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-			errorcode=3;
+			errorcode=2;
 		}
 	}
 	
@@ -58,17 +63,8 @@ public class SendMessage implements Runnable{
 		try {
 			ObjectInputStream in=new ObjectInputStream(socket.getInputStream());
 			Result=in.readObject();
-		} catch (StreamCorruptedException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			Result=null;
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
-			Result=null;
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+		} catch (Exception e) {
+			//只要捕捉到异常就说明数据出错，因而不能使用该数据，需要舍弃
 			Result=null;
 		}
 	}
@@ -76,10 +72,16 @@ public class SendMessage implements Runnable{
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		
+		connect();
+		
+		//连接正常时等待服务器的返回结果
 		if(errorcode==-1){
 			send(Message);
+			
 			long starttime=System.currentTimeMillis();
-			while(true){
+			
+			while(System.currentTimeMillis()-starttime<=ttl){
 				get();
 				if(Result!=null){
 					//deal with the Result received here
@@ -87,24 +89,29 @@ public class SendMessage implements Runnable{
 					
 					break;
 				}
-				if(System.currentTimeMillis()-starttime>=5000){
-					//overtime and exit
-					errorcode=2;
-					break;
-				}
+			}
+			try {
+				if(socket!=null)
+					socket.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} finally{
+				isOver=true;
 			}
 		}
-		try {
-			socket.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		else{
+			isOver=true;
 		}
 	}
 	
 	//get the result
 	public Object getResult() {
 		return Result;
+	}
+	
+	//judge if the Thread has shut down
+	public boolean isOver(){
+		return isOver;
 	}
 	
 	//get the errorcode
