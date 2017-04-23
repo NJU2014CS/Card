@@ -43,6 +43,8 @@ public class MainActivity extends BaseActivity{
 	// 共享位图
 	public static Bitmap bitmap;
 	
+	private CutPictureUtils cutPictureUtils=new CutPictureUtils(MainActivity.this);
+	
 	@Override
  	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -59,6 +61,7 @@ public class MainActivity extends BaseActivity{
 		onRecent();
 	}
 	
+	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// 没有选取或者拍摄照片，resultCode=0，直接返回。
@@ -67,21 +70,37 @@ public class MainActivity extends BaseActivity{
 		
 		if(requestCode==ALBUM){
 			if(data!=null){
-				imageUri=data.getData();
-				Crop(ALBUM);
+				Uri uri=data.getData();
+				imageUri=cutPictureUtils.crop(uri);
 			}
 		}
 		else if(requestCode==CAMERA){
-			Crop(CAMERA);
+			Uri uri=imageUri;
+			imageUri=null;
+			imageUri=cutPictureUtils.crop(uri);
 		}
-		else if(requestCode==CROP){
-			// 裁剪后直接取得数据。
-			bitmap=data.getParcelableExtra("data");
-			// 识别过程。
-			Recognition r=new Recognition();
-			String info=r.getText();
-			// 调用其他活动。
-			callContactActivity(info);
+		else if(requestCode==cutPictureUtils.CROP){
+			if(imageUri!=null){
+				bitmap=cutPictureUtils.decodeUriAsBitmap(imageUri);
+				if(bitmap!=null){
+					// 识别过程。
+					Recognition r=new Recognition();
+					String info=r.getText();
+					// 调用其他活动。
+					callContactActivity(info);
+				}
+				File file=new File(imageUri.getPath());
+				if(file.exists()){
+					boolean success=file.delete();
+					Log.i("InMainActivity", "Delete the temp picture "+(success==true?"success":"failed"));
+				}
+				else{
+					Log.i("InMainActivity", "File not exists");
+				}
+			}
+			else{
+				Log.e("Error", "Crop imageUri is null");
+			}
 		}
 		else{
 			Log.e("Error", "In MainActivity, onActivityResult");
@@ -103,7 +122,7 @@ public class MainActivity extends BaseActivity{
 		album.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActicity", "Click Album");
+				Log.i("InMainActivity", "Click Album");
 				Intent intent = new Intent(Intent.ACTION_PICK);
 				intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
 				startActivityForResult(intent, ALBUM);     
@@ -129,9 +148,9 @@ public class MainActivity extends BaseActivity{
 		camera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActicity", "Click Camrea");
-				// 拍照得到的照片存储在output_image.jpg
-				File outputImage = new File(Environment.getExternalStorageDirectory(), "output_image.jpg");
+				Log.i("InMainActivity", "Click Camrea");
+				// 拍照得到的照片存储在根目录下的temp.jpg
+				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
 				try {
 					if (outputImage.exists()) {
 						outputImage.delete();
@@ -167,7 +186,7 @@ public class MainActivity extends BaseActivity{
 		user.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActicity", "Click User");
+				Log.i("InMainActivity", "Click User");
 				Intent intent = new Intent(MainActivity.this, User.class);
 				startActivity(intent);
 			}
@@ -197,25 +216,12 @@ public class MainActivity extends BaseActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				if(position==3){
-					Log.i("InMainActicity", "Click Test");
+					Log.i("InMainActivity", "Click Test");
 					Intent intent = new Intent(MainActivity.this, WebTest.class);
 					startActivity(intent);
 				}
 			}
 		});
-	}
-
-	// 裁剪，返回位图数据
-	private void Crop(int order){
-		Intent intent = new Intent("com.android.camera.action.CROP");
-		intent.setDataAndType(imageUri, "image/*");
-		intent.putExtra("crop", true);
-		intent.putExtra("scale", true);
-		intent.putExtra("return-data", true); 
-		if(order==CAMERA){
-			intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-		}
-		startActivityForResult(intent, CROP);
 	}
 
 }

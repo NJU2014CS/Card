@@ -8,7 +8,6 @@ import java.util.Map;
 import com.njucs.card.R;
 import com.njucs.card.main.MainActivity;
 import com.njucs.card.tools.BaseActivity;
-import com.njucs.card.tools.Contacts;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
