@@ -1,4 +1,4 @@
-package com.njucs.card.tools;
+package com.njucs.card.contact;
 
 /*
  * 联系人字段，暂时这些，以后需要再添加
@@ -18,13 +18,30 @@ public class Contacts{
 	
 	// 构造函数
 	public Contacts(String s){
-		name=s;
-		mobilephone="15152280426";
-		address="江苏省南京市栖霞区仙林大道163号";
-		mail="1031320610@qq.com";
-		company="南京大学";
-		duty="学生";
-		note="老子最帅";
+		String []info=s.split("\n");
+		for(int i=0;i<info.length;i++){
+			if(info[i].contains("公司")){
+				company=info[i];
+			}
+			if(info[i].contains("地址")&&address==null){
+				address=info[i].substring(info[i].indexOf(":")+1);
+			}
+			if(info[i].contains("邮箱")){
+				mail=info[i].substring(info[i].indexOf(":")+1);
+			}
+			if(info[i].contains("网址")){
+				note=info[i].substring(info[i].indexOf(":")+1);
+			}
+			if(info[i].matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+				mobilephone=info[i];
+			}
+			if(info[i].contains("黄")){
+				name=info[i];
+			}
+			if(info[i].contains("传真")){
+				fax=info[i].substring(info[i].indexOf(":")+1);
+			}
+		}
 	}
 	
 	//	Get Set 函数
