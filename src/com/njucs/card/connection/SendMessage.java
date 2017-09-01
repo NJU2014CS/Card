@@ -7,6 +7,8 @@ import java.io.Serializable;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+import android.util.Log;
+
 
 //调用该模块时，需要判断线程是否在运行，运行完毕后才可读取返回结果！
 
@@ -82,6 +84,7 @@ public class SendMessage implements Runnable{
 			long starttime=System.currentTimeMillis();
 			
 			while(System.currentTimeMillis()-starttime<=ttl){
+				Log.i("SendMessage Run",(System.currentTimeMillis()-starttime)+"");
 				get();
 				if(Result!=null){
 					//deal with the Result received here

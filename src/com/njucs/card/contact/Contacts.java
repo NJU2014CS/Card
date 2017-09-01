@@ -1,5 +1,13 @@
 package com.njucs.card.contact;
 
+import java.util.HashMap;
+
+import com.njucs.card.connection.Monitor;
+import com.njucs.card.connection.SendMessage;
+import com.njucs.card.connection.Utils;
+
+import android.util.Log;
+
 /*
  * 联系人字段，暂时这些，以后需要再添加
  * 2016-11-02
@@ -18,7 +26,7 @@ public class Contacts{
 	
 	// 构造函数
 	public Contacts(String s){
-		String []info=s.split("\n");
+		/*String []info=s.split("\n");
 		for(int i=0;i<info.length;i++){
 			if(info[i].contains("公司")){
 				company=info[i];
@@ -41,6 +49,32 @@ public class Contacts{
 			if(info[i].contains("传真")){
 				fax=info[i].substring(info[i].indexOf(":")+1);
 			}
+		}*/
+		Monitor m=new Monitor(new SendMessage("192.168.1.105", Utils.Transformer(2, s.getBytes())), 10000);
+		new Thread(m).start();
+		while(!m.isOver()){}
+		if(m.GetErrorcode()!=-1)
+			note=m.GetErrorInfo();
+		else{
+			HashMap<String,String> map=new HashMap<String,String>();
+			String res=(String)m.GetResult();
+			Log.i("Contacts",res);
+			String[] list=res.split(" ");
+			Log.i("Test","list length "+list.length);
+			for(int i=0;i<list.length;i++){
+				String[] buf=list[i].split(":");
+				Log.i("Test",list[i]);
+				map.put(buf[0], buf[1]);
+			}
+			name=map.get("name");
+			duty=map.get("duty");
+			company=map.get("company");
+			address=map.get("address");
+			telephone=map.get("telephone");
+			mobilephone=map.get("mobilephone");
+			mail=map.get("mail");
+			fax=map.get("fax");
+			note=map.get("note");
 		}
 	}
 	

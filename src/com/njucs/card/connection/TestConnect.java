@@ -14,7 +14,6 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -87,7 +86,7 @@ public class TestConnect extends BaseActivity{
 	}
 	
 	private void send(byte[] img){
-		Monitor m=new Monitor(new SendMessage(ip, img), 3000);
+		Monitor m=new Monitor(new SendMessage(ip, Utils.Transformer(1,img)), 5000);
 		new Thread(m).start();
 		
 		while(!m.isOver()){
@@ -95,7 +94,10 @@ public class TestConnect extends BaseActivity{
 		}
 		
 		//将结果传到面板
-		ResContent.setText(m.GetResult());
+		if(m.GetErrorcode()==-1)
+			ResContent.setText((String)m.GetResult());
+		else
+			ResContent.setText(m.GetErrorInfo());
 	}
 	
 	@Override
@@ -119,59 +121,5 @@ public class TestConnect extends BaseActivity{
 				}
 			}
 		}
-	}
-	
-	
-	//启动并监视通信线程是否超时，将通信的数据转换成String类型以便调用
-	class Monitor implements Runnable{
-		
-		private SendMessage sm;
-		private long TTL;
-		private String Result;
-		private boolean isOver=false;
-
-		public Monitor(SendMessage sm,long TTL) {
-			// TODO Auto-generated constructor stub
-			this.sm=sm;
-			this.TTL=TTL;
-		}
-		
-		@Override
-		public void run() {
-			// TODO Auto-generated method stub
-			long starttime=System.currentTimeMillis();
-			Thread t=new Thread(sm);
-			t.start();
-			Log.i("Monitor","EnterLoop "+(System.currentTimeMillis()-starttime));
-			while(System.currentTimeMillis()-starttime <= TTL){
-				if(sm.isOver()){
-					Log.i("Monitor","Get FeedBack");
-					int errorcode=sm.getErrorCode();
-					Result=new String();
-					switch(errorcode){
-					case -1:Result=(String)sm.getResult();break;
-					case 0:Result="错误的ip地址";break;
-					case 1:Result="无法连接服务器";break;
-					case 2:Result="与服务器连接断开";break;
-					default:Result="";break;
-					}
-					isOver=true;
-					return;
-				}
-			}
-			Log.i("Monitor","EndLoop "+(System.currentTimeMillis()-starttime));
-			Result="连接超时";
-			isOver=true;
-			return;
-		}
-		
-		public boolean isOver(){
-			return isOver;
-		}
-		
-		public String GetResult(){
-			return Result;
-		}
-		
 	}
 }
