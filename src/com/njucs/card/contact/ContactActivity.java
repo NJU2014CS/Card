@@ -5,12 +5,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.baidu.ocr.sdk.model.Location;
 import com.njucs.card.R;
 import com.njucs.card.main.MainActivity;
+import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
@@ -32,7 +37,6 @@ import android.widget.TextView;
 
 public class ContactActivity extends BaseActivity {
 	// 用来接收从上层活动传递过来的参数：识别出来基本信息
-	//	private Uri imageUri;
 	private String info;
 	
 	private ListView listview=null;
@@ -53,23 +57,27 @@ public class ContactActivity extends BaseActivity {
 		Intent intent=getIntent();
 		info=intent.getStringExtra("Info");
 		
-		// 从主活动中直接取得图片相应的位图
-		Bitmap bm=MainActivity.bitmap;
-		
-		iv=(ImageView)findViewById(R.id.handledpic);
-		if(bm!=null){
-			iv.setImageBitmap(bm);
+		// 从主活动中直接取得图片相应的位图，并根据OCR识别结果圈出文字区域。
+		Bitmap mutableBitmap=MainActivity.bitmap.copy(Bitmap.Config.ARGB_8888, true);
+		Canvas canvas=new Canvas(mutableBitmap);
+		Paint paint=new Paint();						// 画笔
+		paint.setColor(Color.RED);						// 颜色
+		paint.setStyle(Paint.Style.STROKE);			// 不填充
+		paint.setStrokeWidth(1);  						// 线宽=1
+		for(Location l:BaiduOCR.locations){
+			canvas.drawRect(l.getLeft(), l.getTop(), l.getLeft()+l.getWidth(), l.getTop()+l.getHeight(), paint);
 		}
-		
-		Log.i("InContactActivity", "Show the Picture");
+		iv=(ImageView)findViewById(R.id.handledpic);
+		iv.setImageBitmap(mutableBitmap);
+		Log.i("ContactActivity", "Show the image");
 		
 		listview=(ListView)findViewById(R.id.contactlist);
 		
-		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts(info)),R.layout.contact,
+		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts(info, true)),R.layout.contact,
 				new String[]{"label","info"},
 				new int[]{R.id.label,R.id.web_info});
 		listview.setAdapter(adapter);
-		Log.i("InContactActivity", "Adapter");
+		Log.i("ContactActivity", "Adapter");
 	}
 	
 	/*private ArrayList<String> getData(Contacts c){

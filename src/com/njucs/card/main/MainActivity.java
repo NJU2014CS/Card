@@ -1,9 +1,12 @@
 package com.njucs.card.main;
 
+import com.baidu.ocr.sdk.OCR;
+import com.baidu.ocr.sdk.OnResultListener;
+import com.baidu.ocr.sdk.exception.OCRError;
+import com.baidu.ocr.sdk.model.AccessToken;
 import com.njucs.card.R;
-import com.njucs.card.contact.ContactActivity;
 import com.njucs.card.initializtion.GetRecentCard;
-import com.njucs.card.recognition.Recognition;
+import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.web.WebTest;
 import com.njucs.card.user.User;
@@ -34,7 +37,7 @@ import android.view.View.OnTouchListener;
  */
 public class MainActivity extends BaseActivity{
 	static final int ALBUM=1, CAMERA=2, CROP=3;
-	
+	// 操作按钮
 	private ImageButton album, camera, user;
 	// 最近处理的联系人列表
 	private ListView recent;
@@ -42,8 +45,10 @@ public class MainActivity extends BaseActivity{
 	private Uri imageUri;
 	// 共享位图
 	public static Bitmap bitmap;
-	
+	// 图片切割工具
 	private CutPictureUtils cutPictureUtils=new CutPictureUtils(MainActivity.this);
+	// 百度OCR
+	private BaiduOCR baiduOCR=new BaiduOCR(MainActivity.this);
 	
 	@Override
  	protected void onCreate(Bundle savedInstanceState) {
@@ -52,15 +57,16 @@ public class MainActivity extends BaseActivity{
 		
 		// 获取版本号
 		int version=android.os.Build.VERSION.SDK_INT;
-		Log.i("SystemVersion", version+"");
+		Log.i("MainActivity", "SystemVersion:"+version+"");
 		
 		// 几个控件的点击响应函数
 		onAlbum();		
 		onCamera();
 		onUser();
 		onRecent();
+		
+		initAccessTokenWithAkSk();
 	}
-	
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -82,47 +88,31 @@ public class MainActivity extends BaseActivity{
 		else if(requestCode==cutPictureUtils.CROP){
 			if(imageUri!=null){
 				bitmap=cutPictureUtils.decodeUriAsBitmap(imageUri);
-				if(bitmap!=null){
-					// 识别过程。
-					Recognition r=new Recognition();
-					String info=r.getText();
-					// 调用其他活动。
-					callContactActivity(info);
-				}
+
+				baiduOCR.recognize(imageUri.getPath());
+				
 				File file=new File(imageUri.getPath());
 				if(file.exists()){
 					boolean success=file.delete();
-					Log.i("InMainActivity", "Delete the temp picture "+(success==true?"success":"failed"));
-				}
-				else{
-					Log.i("InMainActivity", "File not exists");
+					Log.i("MainActivity", "Delete the temp picture "+(success==true?"success":"failed"));
 				}
 			}
 			else{
-				Log.e("Error", "Crop imageUri is null");
+				Log.e("MainActivity", "Crop imageUri is null");
 			}
 		}
 		else{
-			Log.e("Error", "In MainActivity, onActivityResult");
+			;
 		}
 	}
-	
-	private void callContactActivity(String info){
-		// 传递识别出来的信息Info
-		// 不再传递URI，其他活动直接使用本活动中的共享位图数据。
-		Intent intent=new Intent(MainActivity.this, ContactActivity.class);
-		// intent.putExtra("Uri", imageUri.toString());
-		intent.putExtra("Info", info);
-		startActivity(intent);
-	}
-	
+		
 	private void onAlbum(){
 		album=(ImageButton)findViewById(R.id.btn_album);
 		
 		album.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActivity", "Click Album");
+				Log.i("MainActivity", "Click Album");
 				Intent intent = new Intent(Intent.ACTION_PICK);
 				intent.setDataAndType(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*");
 				startActivityForResult(intent, ALBUM);     
@@ -148,7 +138,7 @@ public class MainActivity extends BaseActivity{
 		camera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActivity", "Click Camrea");
+				Log.i("MainActivity", "Click Camrea");
 				// 拍照得到的照片存储在根目录下的temp.jpg
 				File outputImage = new File(Environment.getExternalStorageDirectory(), "temp.jpg");
 				try {
@@ -186,7 +176,7 @@ public class MainActivity extends BaseActivity{
 		user.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Log.i("InMainActivity", "Click User");
+				Log.i("MainActivity", "Click User");
 				Intent intent = new Intent(MainActivity.this, User.class);
 				startActivity(intent);
 			}
@@ -216,7 +206,7 @@ public class MainActivity extends BaseActivity{
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				if(position==3){
-					Log.i("InMainActivity", "Click Test");
+					Log.i("MainActivity", "Click Test");
 					Intent intent = new Intent(MainActivity.this, WebTest.class);
 					startActivity(intent);
 				}
@@ -224,4 +214,19 @@ public class MainActivity extends BaseActivity{
 		});
 	}
 
+    private void initAccessTokenWithAkSk() {
+    	OCR.getInstance().initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
+			@Override
+			public void onResult(AccessToken result) {
+				String token = result.getAccessToken();
+				Log.i("InitAccessToken", token);
+			}
+			
+			@Override
+			public void onError(OCRError error) {
+				Log.e("InitAccessToken", error.getMessage());
+			}
+		}, getApplicationContext(), "ImSCx0VgCO5tahbz8DBCwoW9", "530h3uiDYuZB1oXC5Zp0ZYlHT1zvbUN6");
+    }
+    
 }

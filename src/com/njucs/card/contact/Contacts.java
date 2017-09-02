@@ -25,56 +25,60 @@ public class Contacts{
 	private String note=null;				// 备注
 	
 	// 构造函数
-	public Contacts(String s){
-		/*String []info=s.split("\n");
-		for(int i=0;i<info.length;i++){
-			if(info[i].contains("公司")){
-				company=info[i];
+	public Contacts(String s, boolean test){
+		if(test){
+			String []info=s.split("\n");
+			for(int i=0;i<info.length;i++){
+				if(info[i].contains("公司")){
+					company=info[i];
+				}
+				if(info[i].contains("地址")&&address==null){
+					address=info[i].substring(info[i].indexOf(":")+1);
+				}
+				if(info[i].contains("邮箱")){
+					mail=info[i].substring(info[i].indexOf(":")+1);
+				}
+				if(info[i].contains("网址")){
+					note=info[i].substring(info[i].indexOf(":")+1);
+				}
+				if(info[i].matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
+					mobilephone=info[i];
+				}
+				if(info[i].contains("黄")){
+					name=info[i];
+				}
+				if(info[i].contains("传真")){
+					fax=info[i].substring(info[i].indexOf(":")+1);
+				}
 			}
-			if(info[i].contains("地址")&&address==null){
-				address=info[i].substring(info[i].indexOf(":")+1);
-			}
-			if(info[i].contains("邮箱")){
-				mail=info[i].substring(info[i].indexOf(":")+1);
-			}
-			if(info[i].contains("网址")){
-				note=info[i].substring(info[i].indexOf(":")+1);
-			}
-			if(info[i].matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
-				mobilephone=info[i];
-			}
-			if(info[i].contains("黄")){
-				name=info[i];
-			}
-			if(info[i].contains("传真")){
-				fax=info[i].substring(info[i].indexOf(":")+1);
-			}
-		}*/
-		Monitor m=new Monitor(new SendMessage("192.168.1.105", Utils.Transformer(2, s.getBytes())), 10000);
-		new Thread(m).start();
-		while(!m.isOver()){}
-		if(m.GetErrorcode()!=-1)
-			note=m.GetErrorInfo();
+		}
 		else{
-			HashMap<String,String> map=new HashMap<String,String>();
-			String res=(String)m.GetResult();
-			Log.i("Contacts",res);
-			String[] list=res.split(" ");
-			Log.i("Test","list length "+list.length);
-			for(int i=0;i<list.length;i++){
-				String[] buf=list[i].split(":");
-				Log.i("Test",list[i]);
-				map.put(buf[0], buf[1]);
+			Monitor m=new Monitor(new SendMessage("192.168.1.105", Utils.Transformer(2, s.getBytes())), 10000);
+			new Thread(m).start();
+			while(!m.isOver()){}
+			if(m.GetErrorcode()!=-1)
+				note=m.GetErrorInfo();
+			else{
+				HashMap<String,String> map=new HashMap<String,String>();
+				String res=(String)m.GetResult();
+				Log.i("Contacts",res);
+				String[] list=res.split(" ");
+				Log.i("Test","list length "+list.length);
+				for(int i=0;i<list.length;i++){
+					String[] buf=list[i].split(":");
+					Log.i("Test",list[i]);
+					map.put(buf[0], buf[1]);
+				}
+				name=map.get("name");
+				duty=map.get("duty");
+				company=map.get("company");
+				address=map.get("address");
+				telephone=map.get("telephone");
+				mobilephone=map.get("mobilephone");
+				mail=map.get("mail");
+				fax=map.get("fax");
+				note=map.get("note");
 			}
-			name=map.get("name");
-			duty=map.get("duty");
-			company=map.get("company");
-			address=map.get("address");
-			telephone=map.get("telephone");
-			mobilephone=map.get("mobilephone");
-			mail=map.get("mail");
-			fax=map.get("fax");
-			note=map.get("note");
 		}
 	}
 	
