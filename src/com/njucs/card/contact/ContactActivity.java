@@ -11,19 +11,20 @@ import com.njucs.card.main.MainActivity;
 import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-
 
 /*
  * 
@@ -37,12 +38,26 @@ import android.widget.TextView;
 
 public class ContactActivity extends BaseActivity {
 	// 用来接收从上层活动传递过来的参数：识别出来基本信息
-	private String info;
-	
-	private ListView listview=null;
+	private static String info;
+	private static Activity activity;
+	private static ListView listview;
+	private static Contacts contact;
+	private static List<Map<String,Object>> record;
 	private ImageView iv;
-	private List<Map<String,Object>> record;
 		
+	public static Handler handler=new Handler(){
+	    @Override
+	    public void handleMessage(Message msg) {
+	           super.handleMessage(msg);
+	   			// 设置列表
+	           if(AipNlp.results.size()==AipNlp.n){
+	        	   for(String s:AipNlp.results)
+	        		   JsonUtil.parsing(s);
+		   		   setListView();
+	           }
+	    }
+	};
+	
 	public final class widget{
 		public TextView label;
 		public EditText info;
@@ -52,12 +67,30 @@ public class ContactActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.contact);
+		activity=ContactActivity.this;
+		listview=(ListView)findViewById(R.id.contactlist);
+		iv=(ImageView)findViewById(R.id.handledpic);
 		
 		// 获取传递参数中识别出来的名片信息
 		Intent intent=getIntent();
 		info=intent.getStringExtra("Info");
 		
 		// 从主活动中直接取得图片相应的位图，并根据OCR识别结果圈出文字区域。
+		showImage();
+		
+		// 自然语言处理，词法分析
+		contact=new Contacts("", true);
+		AipNlp.lexer(info);
+	}
+	
+	private static void setListView(){
+		SimpleAdapter adapter = new SimpleAdapter(activity,getData(contact),R.layout.contact,
+				new String[]{"label","info"},
+				new int[]{R.id.label,R.id.web_info});
+		listview.setAdapter(adapter);
+	}
+	
+	private void showImage(){
 		Bitmap mutableBitmap=MainActivity.bitmap.copy(Bitmap.Config.ARGB_8888, true);
 		Canvas canvas=new Canvas(mutableBitmap);
 		Paint paint=new Paint();						// 画笔
@@ -67,17 +100,7 @@ public class ContactActivity extends BaseActivity {
 		for(Location l:BaiduOCR.locations){
 			canvas.drawRect(l.getLeft(), l.getTop(), l.getLeft()+l.getWidth(), l.getTop()+l.getHeight(), paint);
 		}
-		iv=(ImageView)findViewById(R.id.handledpic);
 		iv.setImageBitmap(mutableBitmap);
-		Log.i("ContactActivity", "Show the image");
-		
-		listview=(ListView)findViewById(R.id.contactlist);
-		
-		SimpleAdapter adapter = new SimpleAdapter(this,getData(new Contacts(info, true)),R.layout.contact,
-				new String[]{"label","info"},
-				new int[]{R.id.label,R.id.web_info});
-		listview.setAdapter(adapter);
-		Log.i("ContactActivity", "Adapter");
 	}
 	
 	/*private ArrayList<String> getData(Contacts c){
@@ -95,7 +118,7 @@ public class ContactActivity extends BaseActivity {
 		return record;
 	}*/
 	
-	private List<Map<String, Object>> getData(Contacts c) {
+	private static List<Map<String, Object>> getData(Contacts c) {
 		record = new ArrayList<Map<String, Object>>();
 		Map<String, Object> map = null;
 		
@@ -108,21 +131,21 @@ public class ContactActivity extends BaseActivity {
 
 		if(c.getMobilephone()!=null){
 			map = new HashMap<String, Object>();
-			map.put("label", "电话：");
+			map.put("label", "手机：");
 			map.put("info", c.getMobilephone());
 			record.add(map);
 		}
 		
 		if(c.getTelephone()!=null){
 			map = new HashMap<String, Object>();
-			map.put("label", "座机：");
+			map.put("label", "电话：");
 			map.put("info", c.getTelephone());
 			record.add(map);
 		}
 
 		if(c.getMail()!=null){
 			map = new HashMap<String, Object>();
-			map.put("label", "Email：");
+			map.put("label", "邮箱：");
 			map.put("info", c.getMail());
 			record.add(map);
 		}
@@ -162,7 +185,25 @@ public class ContactActivity extends BaseActivity {
 			record.add(map);
 		}
 		
+		if(c.getPostcode()!=null){
+			map = new HashMap<String, Object>();
+			map.put("label", "邮编：");
+			map.put("info", c.getPostcode());
+			record.add(map);
+		}
+		
+		if(c.getUrl()!=null){
+			map = new HashMap<String, Object>();
+			map.put("label", "网址：");
+			map.put("info", c.getUrl());
+			record.add(map);
+		}
+		
 		return record;
 	}
 
+	public static Contacts getContact(){
+		return contact;
+	}
+	
 }

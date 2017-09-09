@@ -49,23 +49,23 @@ public class MainActivity extends BaseActivity{
 	private CutPictureUtils cutPictureUtils=new CutPictureUtils(MainActivity.this);
 	// 百度OCR
 	private BaiduOCR baiduOCR=new BaiduOCR(MainActivity.this);
+	// Access Token
+	public static String accessToken;
 	
 	@Override
  	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);	
-		
-		// 获取版本号
-		int version=android.os.Build.VERSION.SDK_INT;
-		Log.i("MainActivity", "SystemVersion:"+version+"");
-		
+				
 		// 几个控件的点击响应函数
 		onAlbum();		
 		onCamera();
 		onUser();
 		onRecent();
 		
+		// 初始化百度OCR AccessToken
 		initAccessTokenWithAkSk();
+		
 	}
 	
 	@Override
@@ -218,8 +218,8 @@ public class MainActivity extends BaseActivity{
     	OCR.getInstance().initAccessTokenWithAkSk(new OnResultListener<AccessToken>() {
 			@Override
 			public void onResult(AccessToken result) {
-				String token = result.getAccessToken();
-				Log.i("InitAccessToken", token);
+				accessToken = result.getAccessToken();
+				Log.i("InitAccessToken", accessToken);
 			}
 			
 			@Override

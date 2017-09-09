@@ -14,43 +14,22 @@ import android.util.Log;
  */
 
 public class Contacts{
-	private String name=null;				// 姓名
-	private String duty=null;				// 职务
+	private String name=null;					// 姓名
+	private String duty=null;					// 职务
 	private String company=null;			// 公司
-	private String address=null;			// 地址
+	private String address=null;				// 地址
 	private String telephone=null;			// 电话
 	private String mobilephone=null;		// 手机
-	private String mail=null;				// 邮箱
-	private String fax=null;				// 传真
-	private String note=null;				// 备注
+	private String mail=null;					// 邮箱
+	private String fax=null;						// 传真
+	private String note=null;					// 备注
+	private String postcode=null;			// 邮编
+	private String url=null;						// 网址
 	
 	// 构造函数
 	public Contacts(String s, boolean test){
 		if(test){
-			String []info=s.split("\n");
-			for(int i=0;i<info.length;i++){
-				if(info[i].contains("公司")){
-					company=info[i];
-				}
-				if(info[i].contains("地址")&&address==null){
-					address=info[i].substring(info[i].indexOf(":")+1);
-				}
-				if(info[i].contains("邮箱")){
-					mail=info[i].substring(info[i].indexOf(":")+1);
-				}
-				if(info[i].contains("网址")){
-					note=info[i].substring(info[i].indexOf(":")+1);
-				}
-				if(info[i].matches("^((13[0-9])|(15[^4,\\D])|(18[0,5-9]))\\d{8}$")){
-					mobilephone=info[i];
-				}
-				if(info[i].contains("黄")){
-					name=info[i];
-				}
-				if(info[i].contains("传真")){
-					fax=info[i].substring(info[i].indexOf(":")+1);
-				}
-			}
+			;
 		}
 		else{
 			Monitor m=new Monitor(new SendMessage("192.168.1.105", Utils.Transformer(2, s.getBytes())), 10000);
@@ -136,6 +115,22 @@ public class Contacts{
 	}
 	public void setNote(String note) {
 		this.note = note;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
+	public String getUrl() {
+		return url;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
 	}
 
 }
