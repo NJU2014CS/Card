@@ -5,7 +5,6 @@ import com.baidu.ocr.sdk.OnResultListener;
 import com.baidu.ocr.sdk.exception.OCRError;
 import com.baidu.ocr.sdk.model.AccessToken;
 import com.njucs.card.R;
-import com.njucs.card.initializtion.GetRecentCard;
 import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.web.WebTest;
@@ -41,6 +40,7 @@ public class MainActivity extends BaseActivity{
 	private ImageButton album, camera, user;
 	// 最近处理的联系人列表
 	private ListView recent;
+	public static ArrayAdapter<String> adapter;
 	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
 	private Uri imageUri;
 	// 共享位图
@@ -199,7 +199,7 @@ public class MainActivity extends BaseActivity{
 		recent = (ListView) findViewById(R.id.list_recent);
 		
 		// 获取最近识别的名片信息
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, GetRecentCard.getData());
+		adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, Recent.getData());
 		recent.setAdapter(adapter);
 		
 		recent.setOnItemClickListener(new OnItemClickListener() {

@@ -8,6 +8,7 @@ import java.util.Map;
 import com.baidu.ocr.sdk.model.Location;
 import com.njucs.card.R;
 import com.njucs.card.main.MainActivity;
+import com.njucs.card.main.Recent;
 import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 
@@ -81,16 +82,17 @@ public class ContactActivity extends BaseActivity {
 		// 自然语言处理，词法分析
 		contact=new Contacts("", true);
 		AipNlp.lexer(info);
+
+		// 做进一步处理
+		furtherProcessing();
 	}
 	
-	private static void setListView(){
-		SimpleAdapter adapter = new SimpleAdapter(activity,getData(contact),R.layout.contact,
-				new String[]{"label","info"},
-				new int[]{R.id.label,R.id.web_info});
-		listview.setAdapter(adapter);
+	private void furtherProcessing(){
+		
+		setListView();
 	}
 	
-	private void showImage(){
+ 	private void showImage(){
 		Bitmap mutableBitmap=MainActivity.bitmap.copy(Bitmap.Config.ARGB_8888, true);
 		Canvas canvas=new Canvas(mutableBitmap);
 		Paint paint=new Paint();						// 画笔
@@ -101,6 +103,13 @@ public class ContactActivity extends BaseActivity {
 			canvas.drawRect(l.getLeft(), l.getTop(), l.getLeft()+l.getWidth(), l.getTop()+l.getHeight(), paint);
 		}
 		iv.setImageBitmap(mutableBitmap);
+	}
+	
+	private static void setListView(){
+		SimpleAdapter adapter = new SimpleAdapter(activity,getData(contact),R.layout.contact,
+				new String[]{"label","info"},
+				new int[]{R.id.label,R.id.web_info});
+		listview.setAdapter(adapter);
 	}
 	
 	/*private ArrayList<String> getData(Contacts c){
