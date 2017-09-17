@@ -12,6 +12,9 @@
     <string name="TestConnect">网络连接测试</string>
     <string name="IPaddr">192.168.1.100</string>
     <string name="Connect">发送</string>
+    <string name="RecognizeRes">识别结果</string>
+    <string name="Return">返回</string>
+    <string name="Save">保存结果</string>
     
 
 </resources>

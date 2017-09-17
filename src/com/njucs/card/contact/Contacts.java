@@ -33,7 +33,7 @@ public class Contacts{
 	}
 	
 	public void Transfer(){
-		Monitor m=new Monitor(new SendMessage("192.168.1.102", Utils.Transformer(2, s.getBytes())), 10000);
+		Monitor m=new Monitor(new SendMessage("192.168.1.104", Utils.Transformer(2, s.getBytes())), 10000);
 		new Thread(m).start();
 		while(!m.isOver()){}
 		if(m.GetErrorcode()!=-1)
@@ -133,4 +133,30 @@ public class Contacts{
 		this.url = url;
 	}
 
+	public String toString(){
+		String res="";
+		if(name!=null)
+			res+="姓名:"+name+" ";
+		if(duty!=null)
+			res+="职位:"+duty+" ";
+		if(company!=null)
+			res+="公司:"+company+" ";
+		if(address!=null)
+			res+="地址:"+address+" ";
+		if(telephone!=null)
+			res+="手机:"+telephone+" ";
+		if(mobilephone!=null)
+			res+="固话:"+mobilephone+" ";
+		if(mail!=null)
+			res+="邮箱:"+mail+" ";
+		if(fax!=null)
+			res+="传真:"+fax+" ";
+		if(note!=null)
+			res+="备注:"+note+" ";
+		if(postcode!=null)
+			res+="邮编:"+postcode+" ";
+		if(url!=null)
+			res+="网站:"+url+" ";
+		return res;
+	}
 }

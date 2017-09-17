@@ -11,7 +11,6 @@ import com.njucs.card.main.MainActivity;
 import com.njucs.card.main.Recent;
 import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -21,6 +20,11 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -66,11 +70,36 @@ public class ContactActivity extends BaseActivity {
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Log.i("Contact Activity", "Creating");
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
+		getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN); 
 		setContentView(R.layout.contact);
+		getWindow().setFeatureInt(Window.FEATURE_CUSTOM_TITLE, R.layout.title);
+		Log.i("Contact Activity", "Finishing");
 		activity=ContactActivity.this;
 		listview=(ListView)findViewById(R.id.contactlist);
 		iv=(ImageView)findViewById(R.id.handledpic);
+		
+		ImageView back=(ImageView) findViewById(R.id.backbutton);
+		back.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				ContactActivity.this.finish();
+			}
+		});
+		ImageView save=(ImageView) findViewById(R.id.savebutton);
+		save.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Recent.write(contact.toString());
+				ContactActivity.this.finish();
+			}
+		});;
 		
 		// 获取传递参数中识别出来的名片信息
 		Intent intent=getIntent();
@@ -87,6 +116,16 @@ public class ContactActivity extends BaseActivity {
 		// 做进一步处理
 		furtherProcessing();
 	}
+	
+	/*@Override
+	public void onWindowFocusChanged(boolean hasFocus){
+		super.onWindowFocusChanged(hasFocus);
+		RelativeLayout rl=(RelativeLayout)findViewById(R.id.titlelayout);
+		FrameLayout.LayoutParams lp=(FrameLayout.LayoutParams) rl.getLayoutParams();
+		int top=WindowUtil.getStatusBarHeight(this);
+		lp.topMargin=top;
+		rl.setLayoutParams(lp);
+	}*/
 	
 	private void furtherProcessing(){
 		
@@ -112,21 +151,6 @@ public class ContactActivity extends BaseActivity {
 				new int[]{R.id.label,R.id.web_info});
 		listview.setAdapter(adapter);
 	}
-	
-	/*private ArrayList<String> getData(Contacts c){
-		ArrayList<String> record=new ArrayList<String>();
-		if(c.getName()!=null)	record.add("姓名:"+c.getName());
-		if(c.getMobilephone()!=null) record.add("电话:"+c.getMobilephone());
-		if(c.getTelephone()!=null)	record.add("座机:"+c.getTelephone());
-		if(c.getMail()!=null)	record.add("Email:"+c.getMail());
-		if(c.getCompany()!=null)	record.add("公司:"+c.getCompany());
-		if(c.getDuty()!=null)	record.add("职位:"+c.getDuty());
-		if(c.getAddress()!=null)	record.add("地址:"+c.getAddress());
-		if(c.getFax()!=null)	record.add("传真:"+c.getFax());
-		if(c.getNote()!=null)	record.add("备注:"+c.getNote());
-		Log.i("String", "GetData Over!");
-		return record;
-	}*/
 	
 	private static List<Map<String, Object>> getData(Contacts c) {
 		record = new ArrayList<Map<String, Object>>();
