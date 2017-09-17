@@ -80,8 +80,9 @@ public class ContactActivity extends BaseActivity {
 		showImage();
 		
 		// 自然语言处理，词法分析
-		contact=new Contacts("", true);
-		AipNlp.lexer(info);
+		contact=new Contacts(info, false);
+		contact.Transfer();
+		//AipNlp.lexer(info);
 
 		// 做进一步处理
 		furtherProcessing();

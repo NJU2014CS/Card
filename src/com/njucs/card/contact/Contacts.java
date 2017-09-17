@@ -25,39 +25,39 @@ public class Contacts{
 	private String note=null;					// 备注
 	private String postcode=null;			// 邮编
 	private String url=null;						// 网址
+	private String s=null;
 	
 	// 构造函数
 	public Contacts(String s, boolean test){
-		if(test){
-			;
-		}
+		this.s=s;
+	}
+	
+	public void Transfer(){
+		Monitor m=new Monitor(new SendMessage("192.168.1.102", Utils.Transformer(2, s.getBytes())), 10000);
+		new Thread(m).start();
+		while(!m.isOver()){}
+		if(m.GetErrorcode()!=-1)
+			note=m.GetErrorInfo();
 		else{
-			Monitor m=new Monitor(new SendMessage("192.168.1.105", Utils.Transformer(2, s.getBytes())), 10000);
-			new Thread(m).start();
-			while(!m.isOver()){}
-			if(m.GetErrorcode()!=-1)
-				note=m.GetErrorInfo();
-			else{
-				HashMap<String,String> map=new HashMap<String,String>();
-				String res=(String)m.GetResult();
-				Log.i("Contacts",res);
-				String[] list=res.split(" ");
-				Log.i("Test","list length "+list.length);
-				for(int i=0;i<list.length;i++){
-					String[] buf=list[i].split(":");
-					Log.i("Test",list[i]);
-					map.put(buf[0], buf[1]);
-				}
-				name=map.get("name");
-				duty=map.get("duty");
-				company=map.get("company");
-				address=map.get("address");
-				telephone=map.get("telephone");
-				mobilephone=map.get("mobilephone");
-				mail=map.get("mail");
-				fax=map.get("fax");
-				note=map.get("note");
+			HashMap<String,String> map=new HashMap<String,String>();
+			String res=(String)m.GetResult();
+			Log.i("Contacts",res);
+			String[] list=res.split(" ");
+			Log.i("Test","list length "+list.length);
+			for(int i=0;i<list.length;i++){
+				String[] buf=list[i].split(":");
+				Log.i("Test",list[i]);
+				map.put(buf[0], buf[1]);
 			}
+			name=map.get("name");
+			duty=map.get("duty");
+			company=map.get("company");
+			address=map.get("address");
+			telephone=map.get("telephone");
+			mobilephone=map.get("mobilephone");
+			mail=map.get("mail");
+			fax=map.get("fax");
+			note=map.get("note");
 		}
 	}
 	
