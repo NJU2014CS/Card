@@ -6,6 +6,7 @@ import com.njucs.card.connection.Monitor;
 import com.njucs.card.connection.SendMessage;
 import com.njucs.card.connection.Utils;
 
+import android.os.Message;
 import android.util.Log;
 
 /*
@@ -13,7 +14,7 @@ import android.util.Log;
  * 2016-11-02
  */
 
-public class Contacts{
+public class Contacts implements Runnable{
 	private String name=null;					// 姓名
 	private String duty=null;					// 职务
 	private String company=null;			// 公司
@@ -33,7 +34,7 @@ public class Contacts{
 	}
 	
 	public void Transfer(){
-		Monitor m=new Monitor(new SendMessage("192.168.1.104", Utils.Transformer(2, s.getBytes())), 10000);
+		Monitor m=new Monitor(new SendMessage("192.168.0.103", Utils.Transformer(2, s.getBytes())), 10000);
 		new Thread(m).start();
 		while(!m.isOver()){}
 		if(m.GetErrorcode()!=-1)
@@ -158,5 +159,15 @@ public class Contacts{
 		if(url!=null)
 			res+="网站:"+url+" ";
 		return res;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		Transfer();
+		ContactActivity.dialog.dismiss();
+		Message m= new Message();
+		m.what=0x101;
+		ContactActivity.handler.sendMessage(m);
 	}
 }

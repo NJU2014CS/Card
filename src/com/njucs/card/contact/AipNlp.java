@@ -3,6 +3,8 @@ package com.njucs.card.contact;
 import java.util.ArrayList;
 
 import com.njucs.card.main.MainActivity;
+
+import android.os.Message;
 import android.util.Log;
 
 public class AipNlp {
@@ -22,7 +24,9 @@ public class AipNlp {
 					String params="{\"text\": \""+s+"\"}";
 					try {
 						results.add(HttpUtil.post(lexer_Url, MainActivity.accessToken, params));
-						ContactActivity.handler.sendEmptyMessage(0);
+						Message m=new Message();
+						m.what=0x100;
+						ContactActivity.handler.sendMessage(m);
 					} catch (Exception e) {
 						Log.i("AipNlp", e.toString());
 					}

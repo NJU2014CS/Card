@@ -12,6 +12,7 @@ import com.njucs.card.main.Recent;
 import com.njucs.card.recognition.BaiduOCR;
 import com.njucs.card.tools.BaseActivity;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -49,17 +50,28 @@ public class ContactActivity extends BaseActivity {
 	private static Contacts contact;
 	private static List<Map<String,Object>> record;
 	private ImageView iv;
+	public static ProgressDialog dialog=null;
 		
 	public static Handler handler=new Handler(){
 	    @Override
 	    public void handleMessage(Message msg) {
-	           super.handleMessage(msg);
+	           //super.handleMessage(msg);
+	    	switch(msg.what){
+	    	case 0x100:{
 	   			// 设置列表
 	           if(AipNlp.results.size()==AipNlp.n){
 	        	   for(String s:AipNlp.results)
 	        		   JsonUtil.parsing(s);
 		   		   setListView();
 	           }
+	           break;
+	        }
+	    	case 0x101:{
+	    		setListView();
+	    		break;
+	    	}
+	    	default:break;
+	        }
 	    }
 	};
 	
@@ -110,7 +122,8 @@ public class ContactActivity extends BaseActivity {
 		
 		// 自然语言处理，词法分析
 		contact=new Contacts(info, false);
-		contact.Transfer();
+		//contact.Transfer();
+		new Thread(contact).start();
 		//AipNlp.lexer(info);
 
 		// 做进一步处理
@@ -128,7 +141,13 @@ public class ContactActivity extends BaseActivity {
 	}*/
 	
 	private void furtherProcessing(){
-		
+		dialog = new ProgressDialog(this);
+		dialog.setCancelable(true);
+		dialog.setMessage("识别中...");
+		dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		dialog.setProgress(0);
+		dialog.setMax(100);
+		dialog.show();
 		setListView();
 	}
 	
@@ -150,6 +169,7 @@ public class ContactActivity extends BaseActivity {
 				new String[]{"label","info"},
 				new int[]{R.id.label,R.id.web_info});
 		listview.setAdapter(adapter);
+		//Log.i("ListView", "set");
 	}
 	
 	private static List<Map<String, Object>> getData(Contacts c) {
