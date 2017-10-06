@@ -6,11 +6,19 @@ import com.baidu.ocr.sdk.exception.OCRError;
 import com.baidu.ocr.sdk.model.AccessToken;
 import com.njucs.card.R;
 import com.njucs.card.recognition.BaiduOCR;
+import com.njucs.card.record.CheckRecordActivity;
+import com.njucs.card.record.Recent;
+import com.njucs.card.record.SlideCutListView;
+import com.njucs.card.record.SlideCutListView.RemoveDirection;
+import com.njucs.card.record.SlideCutListView.RemoveListener;
 import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.tools.web.WebTest;
 import com.njucs.card.user.User;
 
 import java.io.*;
+
+import javax.sql.DataSource;
+
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
 import android.annotation.SuppressLint;
@@ -34,12 +42,12 @@ import android.view.View.OnTouchListener;
  * 对于最近处理列表还需要对每一项添加响应函数，点击后跳转到我们自定义的一个联系人界面（未设计）进行浏览
  * 2016-11-02
  */
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity implements RemoveListener{
 	static final int ALBUM=1, CAMERA=2, CROP=3;
 	// 操作按钮
 	private ImageButton album, camera, user;
 	// 最近处理的联系人列表
-	private ListView recent;
+	private SlideCutListView recent;
 	public static ArrayAdapter<String> adapter;
 	// 从相册得到的或者拍照得到的照片的URI保存在imageUri里。
 	private Uri imageUri;
@@ -55,7 +63,7 @@ public class MainActivity extends BaseActivity{
 	@Override
  	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.main);	
+		setContentView(R.layout.main);
 				
 		// 几个控件的点击响应函数
 		onAlbum();		
@@ -108,7 +116,7 @@ public class MainActivity extends BaseActivity{
 		
 	private void onAlbum(){
 		album=(ImageButton)findViewById(R.id.btn_album);
-		
+		album.setClickable(true);
 		album.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -134,7 +142,7 @@ public class MainActivity extends BaseActivity{
 	
 	private void onCamera(){
 		camera=(ImageButton)findViewById(R.id.btn_camera);
-		
+		camera.setClickable(true);
 		camera.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -172,7 +180,7 @@ public class MainActivity extends BaseActivity{
 	
 	private void onUser(){
 		user=(ImageButton)findViewById(R.id.btn_user);
-		
+		user.setClickable(true);
 		user.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -196,20 +204,22 @@ public class MainActivity extends BaseActivity{
 	}
 	
 	private void onRecent(){
-		recent = (ListView) findViewById(R.id.list_recent);
+		recent = (SlideCutListView) findViewById(R.id.list_recent);
+		recent.setClickable(true);
+		recent.setRemoveListener(this);
 		
 		// 获取最近识别的名片信息
-		adapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, Recent.getData());
+		adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.iteminlist, R.id.list_item, Recent.getData());
 		recent.setAdapter(adapter);
 		
 		recent.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-				if(position==3){
-					Log.i("MainActivity", "Click Test");
-					Intent intent = new Intent(MainActivity.this, WebTest.class);
-					startActivity(intent);
-				}
+				Log.i("MainActivity", "Click Test");
+				Intent intent = new Intent(MainActivity.this, CheckRecordActivity.class);
+				intent.putExtra("data", Recent.GetString(Recent.getMetaData(position)));
+				startActivity(intent);
+				//Toast.makeText(MainActivity.this, Recent.getData().get(position), Toast.LENGTH_SHORT).show();
 			}
 		});
 	}
@@ -228,5 +238,23 @@ public class MainActivity extends BaseActivity{
 			}
 		}, getApplicationContext(), "ImSCx0VgCO5tahbz8DBCwoW9", "530h3uiDYuZB1oXC5Zp0ZYlHT1zvbUN6");
     }
+
+	@Override
+	public void removeItem(RemoveDirection direction, int position) {
+		// TODO Auto-generated method stub
+		//adapter.remove(adapter.getItem(position));
+		Recent.remove(position);
+		adapter.notifyDataSetChanged();
+		Recent.save();
+		/*switch(direction){
+		case RIGHT:
+			Toast.makeText(this, "向右删除"+position, Toast.LENGTH_SHORT).show();
+			break;
+		case LEFT:
+			Toast.makeText(this, "向左删除"+position, Toast.LENGTH_SHORT).show();
+			break;
+		default:break;
+		}*/
+	}
     
 }

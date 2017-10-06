@@ -1,6 +1,8 @@
 package com.njucs.card.tools;
 
 import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,6 +17,7 @@ import android.util.Log;
  * 因为Intent无法传递Bitmap类型的数据，因而需要转换成Byte数组
  * 这个类就是用于Bitmap和Byte数组的互相转换
  * Contacts到byte数组的转换暂时还没写
+ * 此外，还提供各种需要用到的类型转换
  * 
  */
 
@@ -50,5 +53,15 @@ public class FormatConversion {
 	
 	public static Bitmap Bytes2Bitmap(byte[] b){
 		return BitmapFactory.decodeByteArray(b, 0, b.length);
+	}
+	
+	
+	public static List<Integer> StringToIntArray(String s){
+		List<Integer> l=new ArrayList<Integer>();
+		char[] arr=s.toCharArray();
+		for(char c:arr){
+			l.add(Integer.valueOf(c));
+		}
+		return l;
 	}
 }

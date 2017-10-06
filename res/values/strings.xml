@@ -15,6 +15,17 @@
     <string name="RecognizeRes">识别结果</string>
     <string name="Return">返回</string>
     <string name="Save">保存结果</string>
+    <string name="Name">姓名：</string>
+    <string name="Telephone">电话号码：</string>
+    <string name="Company">公司：</string>
+    <string name="Duty">职位：</string>
+    <string name="Email">电子邮件：</string>
+    <string name="Fax">传真</string>
+    <string name="Address">公司地址：</string>
+    <string name="Net">公司网址：</string>
+    <string name="Note">备注信息：</string>
+    <string name="HintCompanyName">XX公司</string>
+    <string name="HintPersonName">张三</string>
     
 
 </resources>

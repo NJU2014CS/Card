@@ -59,13 +59,17 @@
         android:layout_alignParentTop="true"
         android:contentDescription="@string/..."/>
 
-    <ListView
+    <com.njucs.card.record.SlideCutListView
         android:id="@+id/list_recent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/layout1"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout1"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
-    </ListView>
+        android:layout_alignParentTop="true"
+        android:listSelector="@android:color/transparent"
+        android:divider="@null"
+        android:cacheColorHint="@android:color/transparent">
+        
+    </com.njucs.card.record.SlideCutListView>
 
 </RelativeLayout>

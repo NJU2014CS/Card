@@ -34,7 +34,7 @@ public class Contacts implements Runnable{
 	}
 	
 	public void Transfer(){
-		Monitor m=new Monitor(new SendMessage("192.168.0.103", Utils.Transformer(2, s.getBytes())), 10000);
+		Monitor m=new Monitor(new SendMessage("192.168.0.105", Utils.Transformer(2, s.getBytes())), 10000);
 		new Thread(m).start();
 		while(!m.isOver()){}
 		if(m.GetErrorcode()!=-1)
@@ -137,27 +137,27 @@ public class Contacts implements Runnable{
 	public String toString(){
 		String res="";
 		if(name!=null)
-			res+="姓名:"+name+" ";
+			res+="name:"+name+" ";
 		if(duty!=null)
-			res+="职位:"+duty+" ";
+			res+="duty:"+duty+" ";
 		if(company!=null)
-			res+="公司:"+company+" ";
+			res+="company:"+company+" ";
 		if(address!=null)
-			res+="地址:"+address+" ";
+			res+="address:"+address+" ";
 		if(telephone!=null)
-			res+="手机:"+telephone+" ";
+			res+="telephone:"+telephone+" ";
 		if(mobilephone!=null)
-			res+="固话:"+mobilephone+" ";
+			res+="mobilephone:"+mobilephone+" ";
 		if(mail!=null)
-			res+="邮箱:"+mail+" ";
+			res+="mail:"+mail+" ";
 		if(fax!=null)
-			res+="传真:"+fax+" ";
+			res+="fax:"+fax+" ";
 		if(note!=null)
-			res+="备注:"+note+" ";
+			res+="note:"+note+" ";
 		if(postcode!=null)
-			res+="邮编:"+postcode+" ";
+			res+="postcode:"+postcode+" ";
 		if(url!=null)
-			res+="网站:"+url+" ";
+			res+="website:"+url+" ";
 		return res;
 	}
 

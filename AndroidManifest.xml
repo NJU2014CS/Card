@@ -32,6 +32,8 @@
        <activity android:name=".tools.web.WebTest"></activity>
        
        <activity android:name=".connection.TestConnect"></activity>
+       
+       <activity android:name=".record.CheckRecordActivity"></activity>
 
        
     </application>

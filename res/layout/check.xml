@@ -1,29 +1,295 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    >
 
-    <ListView
-        android:id="@+id/listView1"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" >
-    </ListView>
-    
-    <TextView
-            android:id="@+id/label2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="10dp"
-            android:textSize="15sp" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
         
-    <EditText
-            android:id="@+id/info2"
-            android:layout_width="wrap_content"
+    	<ImageView
+        	android:id="@+id/headerview"
+        	android:layout_width="wrap_content"
+        	android:layout_height="wrap_content"
+        	android:src="@drawable/header"
+        	android:paddingLeft="2dp"
+        	android:paddingTop="2dp"
+        	android:contentDescription="@string/..." />
+    	
+    	<LinearLayout
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
+        	android:paddingLeft="7dp"
+        	android:paddingTop="2dp"
+        	android:orientation="vertical"
+        	android:divider="@drawable/divider"
+        	android:showDividers="middle"
+        	>
+        	
+        	<LinearLayout
+        	    android:id="@+id/line1"
+        	    android:layout_width="match_parent"
+        	    android:layout_height="wrap_content"
+        	    android:orientation="horizontal"
+        	    android:layout_weight="1"
+        	    >
+        	    
+        		<TextView
+            		android:layout_width="wrap_content"
+            		android:layout_height="wrap_content"
+            		android:layout_gravity="center_vertical"
+            		android:text="@string/Name"
+            		android:textSize="20sp"
+        	    	/>
+        	
+        		<EditText
+        	    	android:id="@+id/personname"
+        	    	android:layout_width="match_parent"
+        	    	android:layout_height="wrap_content"
+        	    	android:layout_gravity="center_vertical"
+        	    	android:background="@null"
+        	    	android:inputType="none"
+        	    	android:hint="@string/HintPersonName"
+        	    	/>
+        	</LinearLayout>
+        	
+        	<LinearLayout
+        	    android:layout_width="match_parent"
+        	    android:layout_height="wrap_content"
+        	    android:orientation="horizontal"
+        	    android:layout_weight="1"
+        	    >
+        	    <TextView
+        	        android:layout_width="wrap_content"
+        	        android:layout_height="wrap_content"
+        	        android:layout_gravity="center_vertical"
+        	        android:text="@string/Company"
+        	        android:textSize="20sp"
+        	        />
+        	    
+        	    <EditText
+        	    	android:id="@+id/personcompany"
+        	    	android:layout_width="match_parent"
+        	    	android:layout_height="wrap_content"
+        	    	android:layout_gravity="center_vertical"
+        	    	android:background="@null"
+        	    	android:hint="@string/HintCompanyName"
+        	    	/>
+        	</LinearLayout>
+        	
+    	</LinearLayout>
+    	
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:orientation="vertical"
+        android:divider="@drawable/divider"
+        android:showDividers="middle"
+        >
+    	
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@null"
-            android:inputType="textNoSuggestions"
-            android:textSize="15sp" />
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+        	
+            <TextView
+                android:id="@+id/tag0"
+                android:text="@string/Duty"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+            
+            <EditText
+                android:id="@+id/personduty"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tag0"
+                android:background="@null"
+                android:inputType="@null"
+                />
+            
+        </RelativeLayout>
+    	
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+            
+            <TextView
+               	android:id="@+id/tag1"
+               	android:text="@string/Telephone"
+               	android:textSize="17sp"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+               	android:layout_alignParentLeft="true"
+               	android:layout_centerVertical="true"
+               	/>
+            
+            <ImageView
+               	android:id="@+id/image_call"
+               	android:layout_width="wrap_content"
+               	android:layout_height="wrap_content"
+               	android:src="@drawable/call"
+               	android:contentDescription="@string/..."
+               	android:layout_alignParentRight="true"
+               	android:layout_centerVertical="true"
+               	/>
+            
+            <EditText
+               	android:id="@+id/personphone"
+               	android:layout_width="fill_parent"
+               	android:layout_height="wrap_content"
+               	android:background="@null"
+               	android:inputType="phone"
+               	android:layout_toRightOf="@id/tag1"
+               	android:layout_toLeftOf="@id/image_call"
+               	android:layout_centerVertical="true"
+               	/>
+            
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+        	
+            <TextView
+                android:id="@+id/tag2"
+                android:text="@string/Email"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+            
+            <ImageView
+                android:id="@+id/image_mail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/mail"
+                android:contentDescription="@string/..."
+                />
+            
+            <EditText
+                android:id="@+id/personemail"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tag2"
+                android:layout_toLeftOf="@id/image_mail"
+                android:inputType="textEmailAddress"
+                android:background="@null"
+                />
+            
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+        	
+            <TextView
+                android:id="@+id/tag3"
+                android:text="@string/Address"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+            
+            <EditText
+                android:id="@+id/personaddress"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tag3"
+                android:background="@null"
+                android:inputType="@null"
+                />
+            
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+        	
+            <TextView
+                android:id="@+id/tag4"
+                android:text="@string/Net"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+            
+            <EditText
+                android:id="@+id/personnet"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tag4"
+                android:background="@null"
+                android:inputType="none"
+                />
+            
+        </RelativeLayout>
+        
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+        	android:paddingBottom="8dp"
+            >
+        	
+            <TextView
+                android:id="@+id/tag5"
+                android:text="@string/Note"
+                android:textSize="17sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                />
+            
+            <EditText
+                android:id="@+id/personnote"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toRightOf="@id/tag5"
+                android:background="@null"
+                android:inputType="textMultiLine"
+                />
+            
+        </RelativeLayout>
+        
+    </LinearLayout>
 
 </LinearLayout>
