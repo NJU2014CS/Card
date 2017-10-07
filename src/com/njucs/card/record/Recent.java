@@ -34,6 +34,7 @@ public class Recent {
 		if(data==null){
 			checkDirectory();
 			readRecentFile();
+			Sort();
 		}
 		return data;
 	}
@@ -48,6 +49,7 @@ public class Recent {
 	public static void AddMetaData(Map<String,String> m){
 		info.add(m);
 		data.add(m.get("name"));
+		Sort();
 		MainActivity.adapter.notifyDataSetChanged();
 		save();
 	}
@@ -58,7 +60,28 @@ public class Recent {
 		else{
 			data.set(position, m.get("name"));
 			info.set(position, m);
+			Sort();
 			MainActivity.adapter.notifyDataSetChanged();
+			save();
+		}
+	}
+	
+	public static void Sort(){
+		for(int i=data.size()-1;i>=1;i--){
+			boolean flag=false;
+			for(int j=0;j<i;j++){
+				if(data.get(j).compareTo(data.get(j+1))>0){
+					flag=true;
+					String buf=data.get(j);
+					Map<String,String> bufm=info.get(j);
+					data.set(j, data.get(j+1));
+					info.set(j, info.get(j+1));
+					data.set(j+1, buf);
+					info.set(j+1, bufm);
+				}
+			}
+			if(!flag)
+				break;
 		}
 	}
 	
@@ -73,9 +96,7 @@ public class Recent {
 		}
 		
 		Map<String,String> m=GenerateMap(str);
-		data.add(m.get("name"));
-		info.add(m);
-		MainActivity.adapter.notifyDataSetChanged();
+		AddMetaData(m);
 	}
 	
 	public static void save(){
