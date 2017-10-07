@@ -26,6 +26,7 @@
     <string name="Note">备注信息：</string>
     <string name="HintCompanyName">XX公司</string>
     <string name="HintPersonName">张三</string>
+    <string name="Title">Card</string>
     
 
 </resources>

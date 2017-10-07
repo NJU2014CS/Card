@@ -48,6 +48,65 @@
             android:contentDescription="@string/User"
             android:src="@drawable/user" />
     </LinearLayout>
+    
+    <RelativeLayout
+   		android:id="@+id/maintitlebar"
+    	android:layout_width="match_parent"
+    	android:layout_height="50dp"
+    	android:layout_alignParentTop="true"
+    	android:background="@android:color/darker_gray" >
+    
+    	<ImageView
+    	    android:id="@+id/recordsearch"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_alignParentLeft="true"
+    	    android:layout_centerVertical="true"
+    	    android:paddingLeft="10dp"
+    	    android:src="@drawable/search"
+    	    android:contentDescription="@string/..."
+    	    />
+    	
+    	<ImageView
+    	    android:id="@+id/recordadd"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_alignParentRight="true"
+    	    android:layout_centerVertical="true"
+    	    android:paddingRight="10dp"
+    	    android:src="@drawable/add"
+    	    android:contentDescription="@string/..."
+    	    />
+    
+    	<EditText
+    	    android:id="@+id/inputkey"
+    	   	android:layout_width="fill_parent"
+    	    android:layout_height="fill_parent"
+    	    android:gravity="center"
+    	    android:layout_centerVertical="true"
+    	    android:background="@android:drawable/alert_light_frame"
+    	    android:layout_toRightOf="@id/recordsearch"
+    	    android:layout_toLeftOf="@id/recordadd"
+    	    android:singleLine="true"
+    	    android:textSize="20sp"
+    	    android:hint="@string/HintPersonName"
+    	    android:inputType="@null"
+    	    />
+    
+    	<TextView
+    	    android:id="@+id/title"
+    	    android:layout_width="fill_parent"
+    	    android:layout_height="wrap_content"
+    	    android:layout_toRightOf="@id/recordsearch"
+    	    android:layout_toLeftOf="@id/recordadd"
+    	    android:layout_centerVertical="true"
+    	    android:gravity="center"
+    	    android:singleLine="true"
+    	    android:text="@string/Title"
+    	    android:textSize="20sp"
+    	    />
+
+	</RelativeLayout>
 
     <ImageView
         android:id="@+id/test"
@@ -62,10 +121,9 @@
     <com.njucs.card.record.SlideCutListView
         android:id="@+id/list_recent"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:layout_above="@id/layout1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/maintitlebar"
         android:listSelector="@android:color/transparent"
         android:divider="@drawable/divider"
         android:background="@null"

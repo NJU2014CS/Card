@@ -146,5 +146,30 @@ public class Recent {
 		}
 		return sb.toString();
 	}
+	
+	public static List<Integer> SearchContent(String key){
+		List<Integer> res=new ArrayList<Integer>();
+		for(int i=0;i<data.size();i++){
+			if(data.get(i).startsWith(key))
+				res.add(i);
+		}
+		return res;
+	}
+	
+	public static List<String> GetResult(List<Integer> list){
+		List<String> res=new ArrayList<String>();
+		for(int i:list){
+			res.add(data.get(i));
+		}
+		return res;
+	}
+	
+	public static List<Integer> GetIndex(){
+		List<Integer> res=new ArrayList<Integer>();
+		for(int i=0;i<data.size();i++){
+			res.add(i);
+		}
+		return res;
+	}
 
 }

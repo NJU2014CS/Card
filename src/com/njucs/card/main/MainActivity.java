@@ -15,6 +15,7 @@ import com.njucs.card.tools.BaseActivity;
 import com.njucs.card.user.User;
 
 import java.io.*;
+import java.util.List;
 
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -25,18 +26,21 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
+import android.view.Window;
 
 /*
  * 主界面：包括最近扫描结果组成的一个列表ListView::recent和下方四个ImageButton
  * 分别是：名片夹（没什么用），相册，照相，用户
  * 相册和照相的响应函数已完成，会在onActivityResult()里得到一个图片的Uri进而处理得到Bitmap传入识别模块
  * 
- * 对于最近处理列表还需要对每一项添加响应函数，点击后跳转到我们自定义的一个联系人界面（未设计）进行浏览
+ * 对于最近处理列表还需要对每一项添加响应函数，点击后跳转到我们自定义的一个联系人界面进行浏览
  * 2016-11-02
  */
 public class MainActivity extends BaseActivity implements RemoveListener{
@@ -57,9 +61,18 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 	// Access Token
 	public static String accessToken;
 	
+	private ImageView RecordSearch;
+	private ImageView RecordAdd;
+	private EditText SearchKey;
+	private TextView Title;
+	private boolean isSearch=false;
+	
+	private List<Integer> index;
+	
 	@Override
  	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.main);
 				
 		// 几个控件的点击响应函数
@@ -205,8 +218,70 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 		recent.setClickable(true);
 		recent.setRemoveListener(this);
 		
+		RecordSearch=(ImageView) findViewById(R.id.recordsearch);
+		RecordSearch.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(!isSearch){
+					isSearch=true;
+					Title.setVisibility(View.GONE);
+					SearchKey.setVisibility(View.VISIBLE);
+				}
+				else{
+					isSearch=false;
+					Title.setVisibility(View.VISIBLE);
+					SearchKey.setVisibility(View.GONE);
+					SearchKey.setText("");
+					index=Recent.GetIndex();
+					adapter=new ArrayAdapter<String>(MainActivity.this, R.layout.iteminlist, R.id.list_item, Recent.getData());
+					recent.setAdapter(adapter);
+				}
+			}
+		});
+		
+		SearchKey=(EditText) findViewById(R.id.inputkey);
+		SearchKey.setVisibility(View.GONE);
+		SearchKey.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+				// TODO Auto-generated method stub
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				index=Recent.SearchContent(s.toString());
+				List<String> buf=Recent.GetResult(index);
+				adapter=new ArrayAdapter<String>(MainActivity.this, R.layout.iteminlist, R.id.list_item, buf);
+				recent.setAdapter(adapter);
+			}
+		});
+		
+		RecordAdd=(ImageView) findViewById(R.id.recordadd);
+		RecordAdd.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Toast.makeText(MainActivity.this, "触摸了+", Toast.LENGTH_SHORT).show();
+			}
+		});
+		
+		Title=(TextView) findViewById(R.id.title);
+		Title.setVisibility(View.VISIBLE);
+		
 		// 获取最近识别的名片信息
 		adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.iteminlist, R.id.list_item, Recent.getData());
+		index=Recent.GetIndex();
 		recent.setAdapter(adapter);
 		
 		recent.setOnItemClickListener(new OnItemClickListener() {
@@ -214,8 +289,8 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 			public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 				Log.i("MainActivity", "Click Test");
 				Intent intent = new Intent(MainActivity.this, CheckRecordActivity.class);
-				intent.putExtra("data", Recent.GetString(Recent.getMetaData(position)));
-				intent.putExtra("index", position);
+				intent.putExtra("data", Recent.GetString(Recent.getMetaData(index.get(position))));
+				intent.putExtra("index", index.get(position));
 				startActivity(intent);
 				//Toast.makeText(MainActivity.this, Recent.getData().get(position), Toast.LENGTH_SHORT).show();
 			}
@@ -240,19 +315,20 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 	@Override
 	public void removeItem(RemoveDirection direction, int position) {
 		// TODO Auto-generated method stub
-		//adapter.remove(adapter.getItem(position));
-		Recent.remove(position);
-		adapter.notifyDataSetChanged();
-		Recent.save();
-		/*switch(direction){
-		case RIGHT:
-			Toast.makeText(this, "向右删除"+position, Toast.LENGTH_SHORT).show();
-			break;
-		case LEFT:
-			Toast.makeText(this, "向左删除"+position, Toast.LENGTH_SHORT).show();
-			break;
-		default:break;
-		}*/
+		if(!isSearch){
+			Recent.remove(position);
+			adapter.notifyDataSetChanged();
+			Recent.save();
+			/*switch(direction){
+			case RIGHT:
+				Toast.makeText(this, "向右删除"+position, Toast.LENGTH_SHORT).show();
+				break;
+			case LEFT:
+				Toast.makeText(this, "向左删除"+position, Toast.LENGTH_SHORT).show();
+				break;
+			default:break;
+			}*/
+		}
 	}
     
 }
