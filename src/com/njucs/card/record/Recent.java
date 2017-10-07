@@ -31,8 +31,10 @@ public class Recent {
 	}*/
 	
 	public static List<String> getData(){
-		checkDirectory();
-		readRecentFile();
+		if(data==null){
+			checkDirectory();
+			readRecentFile();
+		}
 		return data;
 	}
 	
@@ -43,11 +45,21 @@ public class Recent {
 			return info.get(position);
 	}
 	
+	public static void AddMetaData(Map<String,String> m){
+		info.add(m);
+		data.add(m.get("name"));
+		MainActivity.adapter.notifyDataSetChanged();
+		save();
+	}
+	
 	public static void SetMetaData(int position, Map<String,String> m){
 		if(position<0||position>=info.size())
 			return;
-		else
+		else{
+			data.set(position, m.get("name"));
 			info.set(position, m);
+			MainActivity.adapter.notifyDataSetChanged();
+		}
 	}
 	
 	public static void write(String str){
@@ -111,6 +123,8 @@ public class Recent {
 	}
 	
 	public static void remove(int position){
+		if(position<0||position>=info.size())
+			return;
 		data.remove(position);
 		info.remove(position);
 	}

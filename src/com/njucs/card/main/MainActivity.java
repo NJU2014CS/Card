@@ -272,7 +272,12 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				Toast.makeText(MainActivity.this, "触摸了+", Toast.LENGTH_SHORT).show();
+				//Toast.makeText(MainActivity.this, "触摸了+", Toast.LENGTH_SHORT).show();
+				Intent intent=new Intent(MainActivity.this,CheckRecordActivity.class);
+				intent.putExtra("data", "");
+				intent.putExtra("index", index.size());
+				intent.putExtra("add", true);
+				startActivity(intent);
 			}
 		});
 		
@@ -291,6 +296,7 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 				Intent intent = new Intent(MainActivity.this, CheckRecordActivity.class);
 				intent.putExtra("data", Recent.GetString(Recent.getMetaData(index.get(position))));
 				intent.putExtra("index", index.get(position));
+				intent.putExtra("add", false);
 				startActivity(intent);
 				//Toast.makeText(MainActivity.this, Recent.getData().get(position), Toast.LENGTH_SHORT).show();
 			}

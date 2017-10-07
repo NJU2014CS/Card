@@ -1,14 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     >
+    
+    <RelativeLayout
+        android:id="@+id/checktitlebar"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:layout_alignParentTop="true"
+        android:background="@android:color/darker_gray"
+        >
+    
+    	<Button
+    	    android:id="@+id/check_cancel"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_alignParentLeft="true"
+    	    android:paddingTop="5dp"
+    	    android:paddingBottom="5dp"
+    	    android:text="@string/Cancel"
+    	    android:textSize="20sp"
+    	    android:background="@drawable/btn_confirm_bg"
+    	    />
+    	
+    	<Button
+    	    android:id="@+id/check_save"
+    	    android:layout_width="wrap_content"
+    	    android:layout_height="wrap_content"
+    	    android:layout_centerVertical="true"
+    	    android:layout_alignParentRight="true"
+    	    android:paddingTop="5dp"
+    	    android:paddingBottom="5dp"
+    	    android:text="@string/Save"
+    	    android:textSize="20sp"
+    	    android:background="@drawable/btn_confirm_bg"
+    	    />
+    	
+    </RelativeLayout>
 
     <LinearLayout
+        android:id="@+id/check_maininfo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_below="@id/checktitlebar"
         >
         
     	<ImageView
@@ -77,6 +117,7 @@
         	    	android:layout_height="wrap_content"
         	    	android:layout_gravity="center_vertical"
         	    	android:background="@null"
+        	    	android:inputType="textMultiLine"
         	    	android:hint="@string/HintCompanyName"
         	    	/>
         	</LinearLayout>
@@ -89,6 +130,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
+        android:layout_below="@id/check_maininfo"
         android:orientation="vertical"
         android:divider="@drawable/divider"
         android:showDividers="middle"
@@ -227,7 +269,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tag3"
                 android:background="@null"
-                android:inputType="@null"
+                android:inputType="textMultiLine"
                 />
             
         </RelativeLayout>
@@ -256,7 +298,7 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/tag4"
                 android:background="@null"
-                android:inputType="none"
+                android:inputType="textMultiLine"
                 />
             
         </RelativeLayout>
@@ -292,4 +334,4 @@
         
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

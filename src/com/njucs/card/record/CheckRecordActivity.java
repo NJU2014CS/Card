@@ -14,9 +14,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -34,17 +36,23 @@ public class CheckRecordActivity extends BaseActivity{
 	private ImageView phonecall;
 	private ImageView email;
 	
+	private Button cancel;
+	private Button save;
+	
 	private int index;
+	private boolean add=false;
 	private Map<String,String> m;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.check);
 		Intent intent=getIntent();
 		String buffer=intent.getStringExtra("data");
 		m=Recent.GenerateMap(buffer);
 		index=intent.getIntExtra("index", 0);
+		add=intent.getBooleanExtra("add", false);
 		
 		name=(EditText) findViewById(R.id.personname);
 		name=initEditText(name, "name");
@@ -75,6 +83,9 @@ public class CheckRecordActivity extends BaseActivity{
 		
 		email=(ImageView) findViewById(R.id.image_mail);
 		email=initImageView(email, "email");
+		
+		initCancelButton();
+		initSaveButton();
 	}
 	
 	private EditText initEditText(EditText et, final String etname){
@@ -144,7 +155,6 @@ public class CheckRecordActivity extends BaseActivity{
 				public void afterTextChanged(Editable s) {
 					// TODO Auto-generated method stub
 					m.put(etname,s.toString());
-					Recent.SetMetaData(index, m);
 				}
 			});
 			et.setOnFocusChangeListener(new OnFocusChangeListener() {
@@ -160,6 +170,35 @@ public class CheckRecordActivity extends BaseActivity{
 			});
 			return et;
 		}
+	}
+	
+	private void initSaveButton(){
+		save=(Button) findViewById(R.id.check_save);
+		save.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(!add)
+					Recent.SetMetaData(index, m);
+				else
+					Recent.AddMetaData(m);
+				CheckRecordActivity.this.finish();
+			}
+		});
+	}
+	
+	private void initCancelButton(){
+		cancel=(Button) findViewById(R.id.check_cancel);
+		cancel.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				
+				CheckRecordActivity.this.finish();
+			}
+		});
 	}
 	
 	public Map<String,String> getData(){

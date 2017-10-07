@@ -14,7 +14,7 @@
     <string name="Connect">发送</string>
     <string name="RecognizeRes">识别结果</string>
     <string name="Return">返回</string>
-    <string name="Save">保存结果</string>
+    <string name="Save">保存</string>
     <string name="Name">姓名：</string>
     <string name="Telephone">电话号码：</string>
     <string name="Company">公司：</string>
@@ -27,6 +27,7 @@
     <string name="HintCompanyName">XX公司</string>
     <string name="HintPersonName">张三</string>
     <string name="Title">Card</string>
+    <string name="Cancel">取消</string>
     
 
 </resources>
