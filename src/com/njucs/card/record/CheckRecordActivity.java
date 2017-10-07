@@ -1,20 +1,24 @@
 package com.njucs.card.record;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.njucs.card.R;
 import com.njucs.card.tools.BaseActivity;
-
+import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
 import android.widget.EditText;
-import android.widget.Toast;
+import android.widget.ImageView;
 
 public class CheckRecordActivity extends BaseActivity{
 	
@@ -27,6 +31,10 @@ public class CheckRecordActivity extends BaseActivity{
 	private EditText net;
 	private EditText note;
 	
+	private ImageView phonecall;
+	private ImageView email;
+	
+	private int index;
 	private Map<String,String> m;
 	
 	@Override
@@ -36,6 +44,7 @@ public class CheckRecordActivity extends BaseActivity{
 		Intent intent=getIntent();
 		String buffer=intent.getStringExtra("data");
 		m=Recent.GenerateMap(buffer);
+		index=intent.getIntExtra("index", 0);
 		
 		name=(EditText) findViewById(R.id.personname);
 		name=initEditText(name, "name");
@@ -60,6 +69,12 @@ public class CheckRecordActivity extends BaseActivity{
 		
 		note=(EditText) findViewById(R.id.personnote);
 		note=initEditText(note, "note");
+		
+		phonecall=(ImageView) findViewById(R.id.image_call);
+		phonecall=initImageView(phonecall, "phonecall");
+		
+		email=(ImageView) findViewById(R.id.image_mail);
+		email=initImageView(email, "email");
 	}
 	
 	private EditText initEditText(EditText et, final String etname){
@@ -70,6 +85,34 @@ public class CheckRecordActivity extends BaseActivity{
 		return et;
 	}
 	
+	private ImageView initImageView(ImageView iv, final String ivname){
+		if(iv==null)
+			return iv;
+		else{
+			iv.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(ivname.equals("phonecall")){
+						Intent intent=new Intent(Intent.ACTION_DIAL, Uri.parse("tel:"+phone.getText()));
+						intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+						startActivity(intent);
+					}
+					else if(ivname.equals("email")){
+						Uri uri=Uri.parse("mailto:"+mail.getText());
+						List<String> list=new ArrayList<String>();
+						list.add(mail.getText().toString());
+						Intent intent=new Intent(Intent.ACTION_SENDTO, uri);
+						intent.putExtra(Intent.EXTRA_CC, list.toArray());
+						startActivity(Intent.createChooser(intent, "请选择应用"));
+					}
+				}
+			});
+			return iv;
+		}
+	}
+	
 	private EditText SetListener(final EditText et, final String etname){
 		if(et==null)
 			return et;
@@ -77,6 +120,7 @@ public class CheckRecordActivity extends BaseActivity{
 			et.setCursorVisible(false);
 			et.setOnTouchListener(new OnTouchListener() {
 				
+				@SuppressLint("ClickableViewAccessibility")
 				@Override
 				public boolean onTouch(View v, MotionEvent event) {
 					// TODO Auto-generated method stub
@@ -100,6 +144,7 @@ public class CheckRecordActivity extends BaseActivity{
 				public void afterTextChanged(Editable s) {
 					// TODO Auto-generated method stub
 					m.put(etname,s.toString());
+					Recent.SetMetaData(index, m);
 				}
 			});
 			et.setOnFocusChangeListener(new OnFocusChangeListener() {

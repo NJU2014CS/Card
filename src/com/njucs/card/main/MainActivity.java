@@ -12,12 +12,9 @@ import com.njucs.card.record.SlideCutListView;
 import com.njucs.card.record.SlideCutListView.RemoveDirection;
 import com.njucs.card.record.SlideCutListView.RemoveListener;
 import com.njucs.card.tools.BaseActivity;
-import com.njucs.card.tools.web.WebTest;
 import com.njucs.card.user.User;
 
 import java.io.*;
-
-import javax.sql.DataSource;
 
 import android.widget.*;
 import android.widget.AdapterView.OnItemClickListener;
@@ -218,6 +215,7 @@ public class MainActivity extends BaseActivity implements RemoveListener{
 				Log.i("MainActivity", "Click Test");
 				Intent intent = new Intent(MainActivity.this, CheckRecordActivity.class);
 				intent.putExtra("data", Recent.GetString(Recent.getMetaData(position)));
+				intent.putExtra("index", position);
 				startActivity(intent);
 				//Toast.makeText(MainActivity.this, Recent.getData().get(position), Toast.LENGTH_SHORT).show();
 			}

@@ -12,8 +12,6 @@ import java.util.Scanner;
 import java.util.Set;
 
 import com.njucs.card.main.MainActivity;
-import com.njucs.card.tools.FormatConversion;
-
 import android.os.Environment;
 import android.util.Log;
 
@@ -43,6 +41,13 @@ public class Recent {
 			return null;
 		else
 			return info.get(position);
+	}
+	
+	public static void SetMetaData(int position, Map<String,String> m){
+		if(position<0||position>=info.size())
+			return;
+		else
+			info.set(position, m);
 	}
 	
 	public static void write(String str){

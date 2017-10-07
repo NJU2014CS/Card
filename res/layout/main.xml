@@ -67,7 +67,8 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:listSelector="@android:color/transparent"
-        android:divider="@null"
+        android:divider="@drawable/divider"
+        android:background="@null"
         android:cacheColorHint="@android:color/transparent">
         
     </com.njucs.card.record.SlideCutListView>
