@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.njucs.card.connection.Monitor;
 import com.njucs.card.connection.SendMessage;
+import com.njucs.card.connection.TestConnect;
 import com.njucs.card.connection.Utils;
 
 import android.os.Message;
@@ -34,7 +35,8 @@ public class Contacts implements Runnable{
 	}
 	
 	public void Transfer(){
-		Monitor m=new Monitor(new SendMessage("192.168.0.105", Utils.Transformer(2, s.getBytes())), 10000);
+		Monitor m=new Monitor(new SendMessage(TestConnect.ip, Utils.Transformer(2, s.getBytes())), 10000);
+		Log.i("IPAddress", TestConnect.ip);
 		new Thread(m).start();
 		while(!m.isOver()){}
 		if(m.GetErrorcode()!=-1)

@@ -34,7 +34,7 @@ public class TestConnect extends BaseActivity{
 	private EditText IPaddr;
 	private Button Connect;
 	private TextView ResContent;
-	private String ip;
+	public static String ip;
 	//需要传送的图片（一般为logo，或者截下的文字）
 	private Bitmap picchosen;
 	
